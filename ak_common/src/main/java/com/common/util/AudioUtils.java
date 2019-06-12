@@ -1,4 +1,4 @@
-package com.shuiyi.udpservercn4g.util;
+package com.common.util;
 import javax.sound.sampled.*;
 import javax.sound.sampled.DataLine.Info;
 
@@ -23,7 +23,7 @@ public class AudioUtils {
             // 1.获取音频流数据
             // af为AudioFormat也就是音频格式
             af = getAudioFormat();
-            info = new DataLine.Info(TargetDataLine.class, af);
+            info = new Info(TargetDataLine.class, af);
             // 这里的td实际上是
             td = (TargetDataLine) (AudioSystem.getLine(info));
             // 打开具有指定格式的行，这样可使行获得所有所需的系统资源并变得可操作。
@@ -47,7 +47,7 @@ public class AudioUtils {
             // af为AudioFormat也就是音频格式
             af = getAudioFormat();
             // 2.从音频流获取数据
-            dataLineInfo = new DataLine.Info(SourceDataLine.class, af);
+            dataLineInfo = new Info(SourceDataLine.class, af);
             sd = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
             // 打开具有指定格式的行，这样可使行获得所有所需的系统资源并变得可操作。
             sd.open(af);

@@ -1,4 +1,4 @@
-package com.initaitor.datamodel;
+package com.initaitor.datamodel.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

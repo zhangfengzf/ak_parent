@@ -1,4 +1,4 @@
-package com.example.initiator.service;
+package com.initaitor.service;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,9 +12,9 @@ import org.json.JSONObject;
  */
 public interface JsonService {
     //请求接口工具类
-    String load(String url,JSONObject query) throws Exception;
+    String load(String url, JSONObject query) throws Exception;
     //文字识别接口传输的Json值
-    JSONObject getJson(String id,String status) throws JSONException;
+    JSONObject getJson(String id, String status) throws JSONException;
     //文件创建接口传输的JSON值
-    JSONObject getFileJson(String name,String id,String status) throws JSONException;
+    JSONObject getFileJson(String name, String id, String status) throws JSONException;
 }

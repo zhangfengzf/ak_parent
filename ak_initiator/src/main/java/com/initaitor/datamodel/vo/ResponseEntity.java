@@ -1,4 +1,8 @@
-package com.example.initiator.pojo;
+package com.initaitor.datamodel.vo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -9,29 +13,12 @@ import java.io.Serializable;
  * @Date 2019/2/28 17:23
  * @Version 1.0
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseEntity implements Serializable {
 
     private Integer code;//状态码
     private String msg;//状态信息
 
-    public ResponseEntity(Integer code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
 }

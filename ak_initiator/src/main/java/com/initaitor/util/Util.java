@@ -1,6 +1,7 @@
-package com.example.initiator.util;
+package com.initaitor.util;
 
-import com.example.initiator.pojo.SpeechMessage;
+
+import com.initaitor.datamodel.dto.SpeechMessage;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +13,6 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -140,13 +138,13 @@ public class Util {
         }.start();
         return "";
     }
-    public static JSONObject udpJsonCN(){
-        org.json.JSONObject jsonUDPCN = new org.json.JSONObject();
+    public static JSONObject udpJsonCN() throws Exception{
+        JSONObject jsonUDPCN = new JSONObject();
         jsonUDPCN.put("type","cn");
         return jsonUDPCN;
     }
-    public static JSONObject udpJsonEN(){
-        org.json.JSONObject jsonUDPEN = new org.json.JSONObject();
+    public static JSONObject udpJsonEN()throws Exception{
+        JSONObject jsonUDPEN = new JSONObject();
         jsonUDPEN.put("type","en");
         return jsonUDPEN;
     }

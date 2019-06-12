@@ -1,20 +1,27 @@
 package com.yyq.wordtrans.controller;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("reciverword")
+@RequestMapping("speech/reciverword")
 public class WordController {
+    //SimpMessagingTemplate：SpringBoot提供操作WebSocket的对象
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
     @RequestMapping("/english")
     public String reciveEnglishWord(String message){
-
-     return null;
+        // 获取当前会议的id
+        String userId ="";
+        simpMessagingTemplate.convertAndSendToUser(userId,"/english/getResponse","");
+        return "ok";
     }
-    @RequestMapping("chinese")
+    @RequestMapping("/chinese")
     public String reciveChineseWord(String message){
-
-        return null;
+        String userId ="";
+        simpMessagingTemplate.convertAndSendToUser(userId,"/chinese/getResponse","");
+        return "ok";
     }
 }

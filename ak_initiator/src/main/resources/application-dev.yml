@@ -1,0 +1,5 @@
+server:
+  port: 8008
+logging:
+  path: D:/mylog
+  file: D:/yyq/AKlog/mylog.log

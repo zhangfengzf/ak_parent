@@ -1,14 +1,16 @@
 package com.speechrecognition.controller;
-import com.alibaba.fastjson.JSONObject;
+
 import com.alibaba.nls.client.protocol.NlsClient;
-import com.speechrecognition.task.SpeechClient;
+import com.speechrecognition.datamodel.request.OpenSpeechRecognitionParam;
 import com.speechrecognition.task.RecognitionTask;
+import com.speechrecognition.task.SpeechClient;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("yyq/speech")
+@Log
 public class SpeechController {
     @Autowired
     private RecognitionTask recognitionTask;
@@ -19,7 +21,7 @@ public class SpeechController {
     /**
      * 首次开启语音识别配置
      */
-    @RequestMapping("config_speechrecognition" )
+    @GetMapping("config_speechrecognition" )
     public void  configSpeechRecognition(){
 
     }
@@ -27,11 +29,13 @@ public class SpeechController {
      * 开始语音识别
      * @return
      */
-    @RequestMapping("open_speechrecognition" )
-    public String openSpeechRecognition(JSONObject json){
+    @PostMapping("open_speechrecognition" )
+    public boolean openSpeechRecognition(@RequestBody OpenSpeechRecognitionParam openSpeechRecognitionParam){
+
         client= speechClient.createClient();
-        recognitionTask.openSpeechTask(client);
-        return  "语音识别开启成功";
+        recognitionTask.openSpeechTask(client,openSpeechRecognitionParam.getIsOpen4G(),openSpeechRecognitionParam.getUserId(),openSpeechRecognitionParam.getRequestList());
+        log.info("语音识别开启成功");
+        return true;
     }
 
     /**

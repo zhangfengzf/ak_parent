@@ -1,104 +1,82 @@
-#\u8BED\u8A00\u5BF9\u5E94\u58F0\u5361\u540D\u5B57
-yyq.chinese=cn
-yyq.chineseKEY=cn
-yyq.english=en
-yyq.englishKEY=en
-yyq.other=other
-#\u5404\u4E2A\u7AEF\u53E3\u53F7
-yyq.adminUrl=6489
-#\u63A5\u53E3\u5BF9\u5E94\u542F\u52A8\u5730\u5740
-yyq.asrUrl=8777
-yyq.asrUrlKEY=asrUrl
-yyq.audioUrlCN=4567
-yyq.audioUrlCNKEY=audioUrlCN
-yyq.audioUrlEN=7654
-yyq.audioUrlENKEY=audioUrlEN
-yyq.audioUrlKEY=audioUrl
-yyq.webUrl=8002
-yyq.webUrlKEY=webUrl
-yyq.serverUrl=8008
-yyq.serverUrlKEY=serverUrl
-yyq.UDPPortCN=6600
-yyq.UDPPortEN=6601
-yyq.TCPPort=6602
-#\u540E\u53F0\u7BA1\u7406\u5730\u5740
-yyq.adminAddress=182.150.56.46
-#\u63A5\u53E3\u8FD4\u56DE\u503C\u540D\u5B57
-yyq.jsonName=soundcardName
-yyq.jsonNameType=langType
-#\u63A5\u53E3\u8FD4\u56DE\u503C\u6240\u5BF9\u5E94\u7C7B\u578B\u7684\u503C
-yyq.jsonNameTypeChineseValue=CN
-yyq.jsonNameTypeEnglishValue=EN
-yyq.jsonNameTypeOtherValue=OTHER
-#\u63A5\u53E3\u5BF9\u5E94\u542F\u52A8\u5730\u5740
-yyq.addressOpen=http://127.0.0.1:8777/yyq/recognition_open
-#\u63A5\u53E3\u5BF9\u5E94\u5173\u95ED\u5730\u5740
-yyq.addressClose=http://127.0.0.1:8777/yyq/recognition_close
-#\u6587\u4EF6\u751F\u6210\u63A5\u53E3\u5730\u5740
-yyq.fileAddressOpen=http://127.0.0.1:8777/yyq/config
-#websockeet\u5C40\u57DF\u7F51\u5730\u5740
-yyq.addressOpenLANEN=http://127.0.0.1:7654/open_audio
-yyq.addressOpenLANCN=http://127.0.0.1:4567/open_audio
-yyq.addressCloseLANEN=http://127.0.0.1:7654/close_audio
-yyq.addressCloseLANCN=http://127.0.0.1:4567/close_audio
-#udp4g\u8BED\u97F3\u4F20\u8F93
-yyq.addressOpenWEBCN=http://127.0.0.1:6511/udp/start_cn
-yyq.addressOpenWEBEN=http://127.0.0.1:6501/udp/start_en
-yyq.addressCloseWEBCN=http://127.0.0.1:6511/udp/close_cn
-yyq.addressCloseWEBEN=http://127.0.0.1:6501/udp/close_en
-#\u4E0E\u524D\u7AEF\u4EA4\u4E92\u7684json\u751F\u6210\u5730\u5740
-yyq.addressJson=D:/yyq/nginx/html
-#\u670D\u52A1\u5668\u5F00\u542F\u5730\u5740
-yyq.startNginxAddress=D:/yyq/nginx
-#\u670D\u52A1\u5668\u5F00\u542F\u6587\u4EF6
-yyq.startFile=startNginx.bat
-#\u670D\u52A1\u5668\u5173\u95ED\u5730\u5740
-yyq.stopNginxAddress=D:/yyq/nginx
-#\u670D\u52A1\u5668\u5173\u95ED\u6587\u4EF6
-yyq.stopFile=stopNginx.bat
-#\u5F55\u5236\u97F3\u9891\u4E0E\u8BC6\u522B\u6587\u5B57\u5B58\u50A8\u6587\u4EF6\u540D
-yyq.recordAddress=D:/yyq/file
-#jar\u5B58\u50A8\u4F4D\u7F6E
-yyq.jarAddress=D:/yyq/jar
-#jar\u5BF9\u5E94\u7684\u542F\u52A8.bat\u540D\u5B57
-yyq.jarAddressBatFileName=startJar.bat
-#jar\u5BF9\u5E94\u7684\u5173\u95ED.bat\u540D\u5B57
-yyq.jarAddressBatFileNameStop=stopJar.bat
-#\u4F1A\u8BAE\u540D\u5B57
-yyq.name=meetingName
-#\u4F1A\u8BAE\u76F8\u5173\u5185\u5BB9
-yyq.hostname="ftp://192.168.3.131"
-yyq.port=22
-yyq.userName="Z00864"
-yyq.userPassword="ZF873837917zf"
-#\u540C\u4F20\u8BD1\u5458\u59D3\u540D
-yyq.interpreter1=""
-yyq.interpreter2=""
-#\u6587\u4EF6\u751F\u6210\u8DEF\u5F84
-yyq.filePath=""
-#\u767B\u5F55\u8DEF\u5F84
-yyq.admin=http://ak.lan-bridge.cn:6488
-yyq.adminKEY=adminUrl
-#\u6587\u4EF6\u8DEF\u5F84
-yyq.fileUrl=http://ak.lan-bridge.cn:2356
-yyq.fileUrlKEY=fileUrl
-#\u58F0\u5361\u6570\u91CF
-yyq.speechNumber=2
-#\u4F1A\u8BAEid
-yyq.meetingId=
-#4G\u6587\u5B57\u4F20\u8F93
-yyq.Internet=http://192.168.2.201:8270/yyq/change
-#\u5C40\u57DF\u7F51\u6587\u5B57\u4F20\u8F93
-yyq.InternetLAN=http://127.0.0.1:8777/shuyi/change
-#true\u4E3A4g false\u4E3A\u5C40\u57DF\u7F51
-yyq.status=true
-#4G\u7F51\u7EDC\u4F20\u8F93\u5730\u5740
-yyq.InternetURL=ak.lan-bridge.cn
-#ffmpeg\u547D\u4EE4
-yyq.ffmpeg=ffmpeg -f dshow -i audio=
-yyq.ffmpegName=-acodec aac -ar 44100 -f flv rtmp://127.0.0.1:1935/hls/
-#\u4FDD\u5B58\u97F3\u9891\u7684\u683C\u5F0F
-yyq.audio=mp3
-#TCP\u5F00\u542F\u5173\u95ED\u63A5\u53E3
-yyq.TCPOpenURL=http://192.168.2.201:6500/tcp/start
-yyq.TCPCloseURL=http://192.168.2.201:6500/tcp/close
+#语言对应声卡名字
+yyq:
+  chinese: cn
+  chineseKEY: cn
+  english: en
+  englishKEY: en
+  other: other
+  #各个端口号
+  adminUrl: 6489
+  #接口对应启动地址
+  asrUrl: 8777
+  asrUrlKEY: asrUrl
+  audioUrlCN: 4567
+  audioUrlCNKEY: audioUrlCN
+  audioUrlEN: 7654
+  audioUrlENKEY: audioUrlEN
+  audioUrlKEY: audioUrl
+  webUrl: 8002
+  webUrlKEY: webUrl
+  serverUrl: 8008
+  serverUrlKEY: serverUrl
+  UDPPortCN: 6600
+  UDPPortEN: 6601
+  TCPPort: 6602
+  #后台管理地址
+  adminAddress: 182.150.56.46
+  #接口返回值名字
+  jsonName: soundcardName
+  jsonNameType: langType
+  #接口返回值所对应类型的值
+  jsonNameTypeChineseValue: CN
+  jsonNameTypeEnglishValue: EN
+  jsonNameTypeOtherValue: OTHER
+  #接口对应启动地址
+  addressOpen: http://127.0.0.1:8777/  recognition_open
+  #接口对应关闭地址
+  addressClose: http://127.0.0.1:8777/  recognition_close
+  #文件生成接口地址
+  fileAddressOpen: http://127.0.0.1:8777/  config
+  #websockeet局域网地址
+  addressOpenLANEN: http://127.0.0.1:7654/open_audio
+  addressOpenLANCN: http://127.0.0.1:4567/open_audio
+  addressCloseLANEN: http://127.0.0.1:7654/close_audio
+  addressCloseLANCN: http://127.0.0.1:4567/close_audio
+  #udp4g语音传输
+  addressOpenWEBCN: http://127.0.0.1:6511/udp/start_cn
+  addressOpenWEBEN: http://127.0.0.1:6501/udp/start_en
+  addressCloseWEBCN: http://127.0.0.1:6511/udp/close_cn
+  addressCloseWEBEN: http://127.0.0.1:6501/udp/close_en
+  #与前端交互的json生成地址
+  addressJson: D:/  nginx/html
+  #服务器开启地址
+  startNginxAddress: D:/  nginx
+  #服务器开启文件
+  startFile: startNginx.bat
+  #服务器关闭地址
+  stopNginxAddress: D:/  nginx
+  #服务器关闭文件
+  stopFile: stopNginx.bat
+  #录制音频与识别文字存储文件名
+  recordAddress: D:/  file
+  #jar存储位置
+  jarAddress: D:/  jar
+  #文件生成路径
+  filePath: ""
+  #登录路径
+  admin: http://ak.lan-bridge.cn:6488
+  adminKEY: adminUrl
+  #文件路径
+  fileUrl: http://ak.lan-bridge.cn:2356
+  fileUrlKEY: fileUrl
+  #声卡数量
+  speechNumber: 2
+  #会议id
+  meetingId:
+  #true为4g false为局域网
+  status: true
+  #4G网络传输地址
+  InternetURL: ak.lan-bridge.cn
+  #TCP开启关闭接口
+  TCPOpenURL: http://192.168.2.201:6500/tcp/start
+  TCPCloseURL: http://192.168.2.201:6500/tcp/close

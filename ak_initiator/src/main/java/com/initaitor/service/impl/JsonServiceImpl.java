@@ -1,7 +1,9 @@
-package com.example.initiator.service.impl;
+package com.initaitor.service.impl;
 
-import com.example.initiator.pojo.JsonPro;
-import com.example.initiator.service.JsonService;
+
+import com.initaitor.config.JsonPro;
+import com.initaitor.service.JsonService;
+import com.initaitor.util.Util;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-import static com.example.initiator.util.Util.getSpeechCard;
 
 /**
  * @ClassName: JsonServiceImpl
@@ -72,7 +73,7 @@ public class JsonServiceImpl implements JsonService {
         JSONArray jsonArray = new JSONArray();
         int i = 0;
         //获取声卡名字
-        Map<String, String> speechCard = getSpeechCard();
+        Map<String, String> speechCard = Util.getSpeechCard();
         for (Map.Entry<String,String> entry : speechCard.entrySet()) {
             if (entry.getKey().equals("chinese")){
                 JSONObject json1 = new JSONObject();

@@ -1,37 +1,30 @@
 package com.speechrecognition.util;
 
-import com.lan_bridge.rtmp.service.WebSoketService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+
 import org.springframework.stereotype.Component;
+
 import javax.sound.sampled.*;
 @Component
 public class AudioSystemTask {
 
-    @Autowired
-    private WebSoketService webSoketService;
     private static TargetDataLine targetDataLine;
     private static AudioFormat audioFormat;
     private static DataLine.Info info;
 
-    @Async
-    public void getSystemAudioMix(String soundCarName) {
+
+    public TargetDataLine getSystemAudioMix(String soundCarName) {
         AudioFormat audioFormat = getAudioFormat();
         Mixer mixer = getSysSoundName(soundCarName);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
         try {
             targetDataLine = (TargetDataLine) mixer.getLine(info);
-            targetDataLine.open(audioFormat);
-            targetDataLine.start();
-            System.out.println("----" + Thread.currentThread().getName() + "--" + soundCarName);
-            webSoketService.sendAudioBinay(targetDataLine, soundCarName);
         }catch (LineUnavailableException e) {
             e.printStackTrace();
-            targetDataLine.close();
         }
+        return  targetDataLine;
     }
 
-    public static TargetDataLine getTargetDataLine() throws LineUnavailableException {
+    public  TargetDataLine getTargetDataLine() throws LineUnavailableException {
         if (targetDataLine != null) {
             return targetDataLine;
         } else {
@@ -50,7 +43,7 @@ public class AudioSystemTask {
 
     }
 
-    public static AudioFormat getAudioFormat() {
+    public  AudioFormat getAudioFormat() {
         AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;
         float rate = 24000f;
         int sampleSize = 16;
@@ -61,7 +54,7 @@ public class AudioSystemTask {
     }
 
     // 获取系统声卡
-    public static Mixer getSysSoundName(String soundCarName) {
+    public  Mixer getSysSoundName(String soundCarName) {
         Mixer mixer = null;
         Mixer.Info mixerInfoArray[] = AudioSystem.getMixerInfo();
         for (Mixer.Info mixerInfo : mixerInfoArray) {
@@ -74,10 +67,5 @@ public class AudioSystemTask {
         }
         return mixer;
     }
-    public void closeAll(){
-        if(targetDataLine !=null){
-            targetDataLine.close();
-        }
-        //webSoketService.closeAllWebsocketSession();
-    }
+
 }
