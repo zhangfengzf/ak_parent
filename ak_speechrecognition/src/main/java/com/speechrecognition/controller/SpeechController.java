@@ -1,6 +1,7 @@
 package com.speechrecognition.controller;
 
 import com.alibaba.nls.client.protocol.NlsClient;
+import com.speechrecognition.datamodel.request.Common;
 import com.speechrecognition.datamodel.request.OpenSpeechRecognitionParam;
 import com.speechrecognition.task.RecognitionTask;
 import com.speechrecognition.task.SpeechClient;
@@ -31,9 +32,12 @@ public class SpeechController {
      */
     @PostMapping("open_speechrecognition" )
     public boolean openSpeechRecognition(@RequestBody OpenSpeechRecognitionParam openSpeechRecognitionParam){
-
-        client= speechClient.createClient();
-        recognitionTask.openSpeechTask(client,openSpeechRecognitionParam.getIsOpen4G(),openSpeechRecognitionParam.getUserId(),openSpeechRecognitionParam.getRequestList());
+        if(Common.getIsFirstOpenSpeech()){
+            client= speechClient.createClient();
+            Common.setIsFirstOpenSpeech(false);
+            Common.setIsCloseSpeech(false);
+        }
+        recognitionTask.openSpeechTask(client,openSpeechRecognitionParam.getIsOpen4G(),openSpeechRecognitionParam.getUserId(),openSpeechRecognitionParam.getRequestList(),"");
         log.info("语音识别开启成功");
         return true;
     }
@@ -48,6 +52,7 @@ public class SpeechController {
         if( null !=client ){
             speechClient.closeClient();
         }
+        Common.setIsCloseSpeech(true);
         return "语音识别关闭成功";
     }
 
