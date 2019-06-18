@@ -15,6 +15,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        <!-- 添加PageOffice依赖（必须） -->
+        <!--<dependency>
+            <groupId>com.zhuozhengsoft</groupId>
+            <artifactId>pageoffice</artifactId>
+
+        </dependency>-->
     </dependencies>
 
     <build>
