@@ -4,34 +4,46 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Common {
-    // 是否开启4G文字传输，默认开启
-    private static String isOpen4G = "open";
-    // 是否第一次开启语音识别，区别第一次开启和重启（语音切换需要重启）
-    private static Boolean isFirstOpenSpeech = true;
+    // 语音识别开启状态
+    private static volatile Boolean isOpenSpeech = true;
+   // 切换状态，只要切换就设为false
+    private static volatile Boolean  soundCarAndLanguageState = true;
+    //  声卡类型和说话语音类型是否对应， 默认对应“normal”  中文声卡说中文语音，英文声卡说英文语音，不对应为“change”
+    private static volatile String soundCarAndLanguageType="normal";
+    // 定时任务状态
+    private static volatile Boolean scheduleTaskstate =true;
 
-    private static Boolean isCloseSpeech = false;
-
-    public static Boolean getIsCloseSpeech() {
-        return isCloseSpeech;
+    public static Boolean getScheduleTaskstate() {
+        return scheduleTaskstate;
     }
 
-    public static void setIsCloseSpeech(Boolean isCloseSpeech) {
-        Common.isCloseSpeech = isCloseSpeech;
+    public static void setScheduleTaskstate(Boolean scheduleTaskstate) {
+        Common.scheduleTaskstate = scheduleTaskstate;
     }
 
-    public static String getIsOpen4G() {
-        return isOpen4G;
+    public static String getSoundCarAndLanguageType() {
+        return soundCarAndLanguageType;
     }
 
-    public static void setIsOpen4G(String isOpen4G) {
-        Common.isOpen4G = isOpen4G;
+    public static void setSoundCarAndLanguageType(String soundCarAndLanguageType) {
+        Common.soundCarAndLanguageType = soundCarAndLanguageType;
     }
 
-    public static Boolean getIsFirstOpenSpeech() {
-        return isFirstOpenSpeech;
+    public static Boolean getSoundCarAndLanguageState() {
+        return soundCarAndLanguageState;
     }
 
-    public static void setIsFirstOpenSpeech(Boolean isFirstOpenSpeech) {
-        Common.isFirstOpenSpeech = isFirstOpenSpeech;
+    public static void setSoundCarAndLanguageState(Boolean soundCarAndLanguageState) {
+        Common.soundCarAndLanguageState = soundCarAndLanguageState;
     }
+
+    public static Boolean getIsOpenSpeech() {
+        return isOpenSpeech;
+    }
+
+    public static void setIsOpenSpeech(Boolean isOpenSpeech) {
+        Common.isOpenSpeech = isOpenSpeech;
+    }
+
+
 }

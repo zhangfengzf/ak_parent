@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("speech/reciverword")
 public class WordController {
@@ -46,6 +47,7 @@ public class WordController {
 
     public void sendJsonMessageToUser(String message) {
         try {
+
             JSONObject jsonObject = new JSONObject(message);
             String userId = jsonObject.getString("userId");
             String soundCarName = jsonObject.getString("soundCarName");

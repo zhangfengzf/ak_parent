@@ -1,3 +1,16 @@
-spring:
-  profiles:
-    active: cn
+#配置线程池
+thread:
+    corePoolSize: 10
+    maxPoolSize:  20
+    queueCapacity: 10
+# 配置语音识别相关参数
+alibaba:
+  token    : ""
+  appKeyCn : "dWZhIDTR6NrcpU2R"
+  appKeyEn : "unjproHCbfrjbqK6"
+  key      : "LTAIGR4VMsoBzBbg"
+  secret   : "5js9IfOOTfUhhI3I5naF753DpTE5ch"
+
+
+
+

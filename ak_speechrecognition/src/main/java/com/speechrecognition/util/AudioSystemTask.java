@@ -1,13 +1,9 @@
 package com.speechrecognition.util;
 
 
-import org.springframework.stereotype.Component;
-
-import javax.sound.sampled.*;
-@Component
 public class AudioSystemTask {
 
-    private static TargetDataLine targetDataLine;
+ /*   private static TargetDataLine targetDataLine;
     private static AudioFormat audioFormat;
     private static DataLine.Info info;
 
@@ -67,5 +63,5 @@ public class AudioSystemTask {
         }
         return mixer;
     }
-
+*/
 }

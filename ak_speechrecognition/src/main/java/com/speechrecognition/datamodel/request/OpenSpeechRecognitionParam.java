@@ -2,9 +2,11 @@ package com.speechrecognition.datamodel.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class OpenSpeechRecognitionParam {
-    private String requestList;
+    private List<RequestModle> requestList;
     private String userId;
     private String isOpen4G;
 }
