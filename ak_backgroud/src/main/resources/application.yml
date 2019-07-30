@@ -1,0 +1,48 @@
+server:
+  port: 8670
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: root
+    sql-script-encoding: utf-8
+    url: jdbc:mysql://127.0.0.1:3306/ak_backgroud?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&useSSL=true
+
+    tomcat:
+      max-active: 50
+      max-wait: 20000
+      max-idle: 20
+      min-idle: 15
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 100MB
+  banner:
+    charset: UTF-8
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+mybatis:
+  mapper-locations: classpath*:com/yyq/backgroud/mapper/*.xml
+  type-aliases-package: com.yyq.backgroud.mapper
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+    # pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+
+auto:
+  resetpassword: 123456
+
+
+

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yyq.backgroud.mapper.MeetingMapper">
+    <resultMap id="BaseResultMap" type="com.yyq.backgroud.bean.Meeting">
+        <id column="id" property="id"/>
+        <result column="meeting_type" property="meetingType"/>
+        <result column="meeting_name" property="meetingName"/>
+        <result column="address" property="address"/>
+        <result column="meeting_scale" property="meetingScale"/>
+        <result column="meeting_bill" property="meetingBill"/>
+        <result column="meeting_context" property="meetingContext"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="ais_delete" property="isDelete"/>
+        <result column="state" property="state"/>
+        <result column="main_id" property="mainId"/>
+    </resultMap>
+    <resultMap id="UserAndMeetingMap" type="com.yyq.backgroud.bean.Meeting" extends="BaseResultMap">
+        <collection property="user" ofType="com.yyq.backgroud.bean.User">
+            <result column="bid" property="id"/>
+            <result column="username"  property="username"/>
+            <result column="real_name"  property="realName"/>
+            <result column="bis_delete" property="isDelete"/>
+        </collection>
+    </resultMap>
+    <sql id="base_column">
+        a.id as id,a.meeting_type,a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
+        a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete,a.state, b.id as bid,
+        b.user_name as username, b.user_realname as real_name, b.isdelete as bis_delete
+    </sql>
+    <select id="selectMeetingPage" resultMap="UserAndMeetingMap" >
+        select
+        <include refid="base_column"/>
+        from       sys_meeting  a
+        left join  sys_user    b
+        on a.username = b.user_name
+        where 1=1
+        <if test="username != null">
+            and a.username = #{username}
+        </if>
+        order by id
+    </select>
+    <insert id="insertMeeting"  useGeneratedKeys="true" keyProperty="id"  parameterType="com.yyq.backgroud.bean.Meeting">
+      insert into
+         sys_meeting
+        (meeting_type,meeting_name,address,meeting_scale,meeting_bill,meeting_context,start_time,end_time,username,main_id)
+      value
+        (#{meetingType},
+          #{meetingName},
+          #{address},
+          #{meetingScale},
+          #{meetingBill},
+          #{meetingContext},
+          #{startTime},
+          #{endTime},
+          #{user.username}，
+          #{mainId})
+    </insert>
+
+    <update id="updateMeeting" parameterType="com.yyq.backgroud.bean.Meeting">
+      update
+          sys_meeting
+      set
+          meeting_type = #{meetingType},
+          meeting_name = #{meetingName},
+          address = #{address},
+          meeting_scale = #{meetingScale} ,
+          meeting_bill = #{meetingBill},
+          meeting_context = #{meetingContext},
+          start_time = #{startTime},
+          end_time = #{endTime}
+      where
+          id = #{id}
+    </update>
+
+    <select id="queryMeetingByMeetingId" resultMap="UserAndMeetingMap">
+       select
+        <include refid="base_column"/>
+      from
+	    sys_meeting a
+	  left join  sys_user b
+	  on a.username = b.user_name
+      where a.id = #{id} and ais_delete = '0'
+    </select>
+    <select id="queryMeeting" resultMap="UserAndMeetingMap">
+        select
+           <include refid="base_column"/>
+        from       sys_meeting  a
+	    left join  sys_user    b
+	    on a.username = b.user_name
+	    where 1=1  and  ais_delete = '0'
+	    <if test="username != null">
+          and a.username = #{username}
+        </if>
+    </select>
+    <update id="deleteMeetingById">
+        update sys_meeting set isdelete = '1'  where id = #{id}
+    </update>
+    <select id="queryMeetingLikeMeeting" resultMap="UserAndMeetingMap">
+        select
+           <include refid="base_column"/>
+        from   sys_meeting a
+        left join sys_user b
+        on a.username = b.user_name
+        where 1 = 1 and ais_delete = '0'
+        <if test="meetingName != null">
+            and a.meeting_name like concat('%',#{meetingName},'%')
+        </if>
+        <if test="startTime != null">
+            and a.start_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and a.end_time &lt;= #{endTime}
+        </if>
+        <if test="state != null">
+            and a.state = #{state}
+        </if>
+        <if test="user != null">
+            <if test="user.username != null">
+                and a.username = #{user.username}
+            </if>
+        </if>
+        order by id
+    </select>
+    <select id="findAllMainMeetingByCurrUser" resultMap="UserAndMeetingMap">
+        select *  from  sys_meeting where  state = '1'
+        <if test="username != null">
+            and username = #{username}
+        </if>
+    </select>
+
+</mapper>

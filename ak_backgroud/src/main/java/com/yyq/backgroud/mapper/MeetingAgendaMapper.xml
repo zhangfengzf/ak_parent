@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yyq.backgroud.mapper.MeetingAgendaMapper">
+    <resultMap id="BaseResultMap" type="com.yyq.backgroud.bean.MeetingAgenda">
+        <id column="id" property="id"/>
+        <result column="agenda_type" property="type"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="meeting_id" property="meetingId"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+    <resultMap id="AnchorMap" type="com.yyq.backgroud.bean.Anchor">
+        <id column="id" property="id"/>
+        <result column="anchor_name" property="anchorName"/>
+        <result column="anchor_introduce" property="anchorIntroduce"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="meeting_id" property="meetingId"/>
+    </resultMap>
+    <resultMap id="SpeakerMap" type="com.yyq.backgroud.bean.Speaker">
+        <result column="speaker_name" property="speakerName"/>
+        <result column="speaker_introduce" property="speakerIntroduce"/>
+        <result column="photo" property="photo"/>
+        <result column="title" property="title"/>
+        <result column="agenda_id" property="agendaId"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+    <resultMap id="findAgendaMap" type="com.yyq.backgroud.bean.MeetingAgenda" extends="BaseResultMap">
+        <collection property="speaker" resultMap="SpeakerMap">
+
+        </collection>
+
+    </resultMap>
+    <insert id="insertAnchor" parameterType="com.yyq.backgroud.bean.Anchor">
+        insert into anchor(anchor_name,anchor_introduce,meeting_id)
+        value(#{anchorName},#{anchorIntroduce},#{meetingId})
+    </insert>
+    <delete id="deleteAnchor" >
+        delete from anchor where id = #{id}
+    </delete>
+    <select id="queryAnchors" resultMap="AnchorMap">
+       select id,anchor_name,anchor_introduce,meeting_id,is_delete  from anchor where meeting_id = #{meetingId}
+    </select>
+
+    <insert id="addSpeaker" >
+        insert into speaker(speaker_name,speaker_introduce,photo,title,agenda_id)
+        value(#{speakerName},#{speakerIntroduce},#{photo},#{title},#{agendaId})
+    </insert>
+
+
+    <insert id="insertMeetingAgeda" useGeneratedKeys="true" keyProperty="id" parameterType="com.yyq.backgroud.bean.MeetingAgenda">
+        insert into meeting_agenda(agenda_type,start_time,end_time,meeting_id)
+        value(#{type},#{startTime},#{endTime},#{meetingId})
+    </insert>
+    <delete id="deleteMeetingAgeda">
+      delete from meeting_agenda where id = #{id}
+
+    </delete>
+    <delete id="deleteSpeaker">
+       delete from speaker where agenda_id = #{id}
+    </delete>
+    <select id="queryAllAgendaByMeetingId" resultMap="findAgendaMap">
+        select a.*,b.speaker_name,b.speaker_introduce,b.photo,b.title  from meeting_agenda a
+        left join speaker b
+        on a.id = b.agenda_id
+        where a.meeting_id = #{id}
+    </select>
+
+
+</mapper>

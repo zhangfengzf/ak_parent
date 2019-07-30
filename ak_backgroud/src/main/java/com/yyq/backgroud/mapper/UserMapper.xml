@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yyq.backgroud.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.yyq.backgroud.bean.User">
+        <id column="id" property="id"/>
+        <result column="user_name" property="username"/>
+        <result column="user_realname" property="realName"/>
+        <result column="password" property="password"/>
+        <result column="telphone" property="telphone"/>
+        <result column="department" property="department"/>
+        <result column="user_scope" property="userScope"/>
+        <result column="user_type" property="userType"/>
+        <result column="user_state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="isdelete" property="isDelete"/>
+    </resultMap>
+    <resultMap id="roleResultMap" type="com.yyq.backgroud.bean.Role">
+        <id column="id" property="id"/>
+        <result column="role_code" property="roleCode"/>
+        <result column="role_name" property="roleName"/>
+    </resultMap>
+    <resultMap id="loadUserMap" type="com.yyq.backgroud.bean.User" extends="BaseResultMap">
+        <collection property="roles" ofType="com.yyq.backgroud.bean.Role"
+                    select="findRoleByuserName" column="user_name">
+        </collection>
+    </resultMap>
+    <sql id="selectColumn" >
+        select * from sys_user where 1=1
+        <if test="username != null " >
+            and user_name like concat('%',#{username},'%')
+        </if>
+        <if test="realName != null">
+            and user_realname like  concat('%',#{realName},'%')
+        </if>
+        <if test="state != null">
+            and user_state = #{state}
+        </if>
+        <if test="userScope != null">
+            and user_scope = #{userScope}
+        </if>
+        <if test="userType !=null">
+            and user_type = #{userType}
+        </if>
+    </sql>
+    <insert id="insertUserAndRoleByName">
+        insert into sys_users_role(user_name) value (#{username})
+    </insert>
+    <select id="getUserByName" resultMap="loadUserMap">
+        select *  from sys_user where user_name = #{username}
+    </select>
+
+    <insert id="insertUser" parameterType="com.yyq.backgroud.bean.User">
+        insert into sys_user set user_name = #{username} , user_realname = #{realName} , password = #{password}
+        , telphone = #{telphone} , department = #{department} , user_scope = #{userScope} , user_type = #{userType}
+        , user_state = #{state},create_time = #{createTime}
+    </insert>
+    <select id="findRoleByuserName" resultMap="roleResultMap">
+          select
+            b.*
+          from
+              sys_users_role a
+          join
+              sys_role b
+          on
+              a.role_Id = b.id
+          where a.user_name = #{username}
+    </select>
+    <update id="updateUser" parameterType="com.yyq.backgroud.bean.User">
+         update sys_user set  user_realname = #{realName} , password = #{password}
+        , telphone = #{telphone} , department = #{department} , user_scope = #{userScope} , user_type = #{userType}
+        , user_state = #{state} where user_name = #{username}
+    </update>
+    <select id="queryAllUser" resultMap="BaseResultMap">
+        <include refid="selectColumn"/>
+    </select>
+    <update id="deleteUser">
+          update  sys_user set isdelete = '1' where user_name = #{username}
+    </update>
+    <update id="updateRoleByUserName">
+      update sys_users_role  a set a.role_id = #{roleId} where user_name = #{username}
+    </update>
+    <select id="findAllUserByPage" resultMap="BaseResultMap">
+          <include refid="selectColumn"/>
+          order by id
+    </select>
+
+
+</mapper>
