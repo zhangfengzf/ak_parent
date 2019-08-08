@@ -1,5 +1,0 @@
-server:
-  port: 6511
-urlandpost:
-  url: "ak.lan-bridge.cn"
-  post: "6602"

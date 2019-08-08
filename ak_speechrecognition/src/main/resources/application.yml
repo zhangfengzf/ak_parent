@@ -11,6 +11,8 @@ alibaba:
   key      : "LTAIGR4VMsoBzBbg"
   secret   : "5js9IfOOTfUhhI3I5naF753DpTE5ch"
 
+request:
+  address: http://127.0.0.1:8270/yyq/send
 
-
-
+server:
+  port: 8081

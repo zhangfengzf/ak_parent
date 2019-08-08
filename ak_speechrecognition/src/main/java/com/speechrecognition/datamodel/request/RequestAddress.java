@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class RequestAddress {
-  @Value("request.address")
+  @Value("${request.address}")
  private String serverWordAddress;
 
 }

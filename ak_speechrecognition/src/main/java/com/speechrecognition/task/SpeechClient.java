@@ -80,7 +80,7 @@ public class SpeechClient {
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void scheduledState(){
-        Common.setScheduleTaskstatus(false);
+        Common.setScheduleTaskstate(false);
     }
     /**
      *  根据 key以及secret生产token

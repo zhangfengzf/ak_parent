@@ -28,8 +28,8 @@ public class HttpUrlConnectionUtil {
             connection.setRequestProperty("Charset", "UTF-8");
             connection.connect();
             // 向请求的路径传入数据
-            DataOutputStream dos=new DataOutputStream(connection.getOutputStream());
-            dos.writeBytes(o);
+            PrintWriter dos=new PrintWriter(new DataOutputStream(connection.getOutputStream()));
+            dos.write(o);
             dos.flush();
             dos.close();
             // 返回的状态码
@@ -48,6 +48,8 @@ public class HttpUrlConnectionUtil {
             e.printStackTrace();
         }catch (IOException e){
            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         return msg;

@@ -1,6 +1,5 @@
 package com.speechrecognition.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriberListener;
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriberResponse;
@@ -15,8 +14,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *  语音识别实现类
  */
@@ -34,6 +36,18 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
     private static BlockingQueue<JSONObject> englishQueue  = new ArrayBlockingQueue(20);
     // 存放中文文字的队列
     private static BlockingQueue<JSONObject>  chineseQueue  = new ArrayBlockingQueue(20);
+    private static Map<Integer,Integer> cnMap = new ConcurrentHashMap<>();
+    private static Map<Integer,String> enMap = new ConcurrentHashMap<>();
+    // 统计返回的次数
+    private static int cnNum;
+    //
+    private static int cnCount;
+    private static String index ="";
+    // 字母
+    private static String charIndex ="";
+    // 上一次断句，逗号所在的位置
+    private static int lastIndex = 0;
+    private static int enNum;
    // @Autowired
   //  private HttpClientUtil httpClientUtil;
     private static final Logger logger = LoggerFactory.getLogger(SpeechTranscriberListenerServiceImpl.class);
@@ -43,6 +57,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
 
           speechTranscriberListener = new SpeechTranscriberListener() {
            int count =0;
+           int num =0;
 
            /**
              *  语音识别
@@ -55,7 +70,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
 
             @Override
             public void onSentenceBegin(SpeechTranscriberResponse speechTranscriberResponse) {
-                logger.info("语音识别：start.........");
+                //logger.info("语音识别：start.........");
             }
 
             /**
@@ -64,15 +79,18 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
              */
             @Override
             public void onSentenceEnd(SpeechTranscriberResponse speechTranscriberResponse) {
+                String transSentenceText = speechTranscriberResponse.getTransSentenceText();
+                JSONObject jsonObject = nextLineText(language, speechTranscriberResponse);
 
-                String text = speechTranscriberResponse.getTransSentenceText();
                 // 每9句话进行换行
                 count++;
                 if (count ==9){
-                    text  +=  System.getProperty("line.separator")+System.getProperty("line.separator");
+                    transSentenceText  +=  System.getProperty("line.separator")+System.getProperty("line.separator");
                     count =0;
                 }
-                onSendWordToUser(speechTranscriberResponse,language,userId,soundCarName,text,isOpen4G);
+
+                onSendWordToUser(jsonObject,language,userId,soundCarName,transSentenceText,isOpen4G);
+
             }
 
             /**
@@ -81,12 +99,14 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
             @Override
             public void onTranscriptionResultChange(SpeechTranscriberResponse speechTranscriberResponse) {
                 String text = speechTranscriberResponse.getTransSentenceText();
-                onSendWordToUser(speechTranscriberResponse,language,userId,soundCarName,text,isOpen4G);
+                JSONObject jsonObject = nextLineText(language, speechTranscriberResponse);
+
+                onSendWordToUser(jsonObject,language,userId,soundCarName,text,isOpen4G);
             }
 
             @Override
             public void onTranscriptionComplete(SpeechTranscriberResponse speechTranscriberResponse) {
-                logger.info("语音识别：end.........");
+               // logger.info("语音识别：结束.........");
             }
 
             @Override
@@ -96,7 +116,69 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
         };
        return speechTranscriberListener;
     }
-      @Async(value = "asyncTaskExecutor")
+        public JSONObject nextLineText(String lan,SpeechTranscriberResponse speechTranscriberResponse) {
+            JSONObject jsonObject = null;
+            if ("CN".equals(lan)) {
+                jsonObject = new JSONObject();
+
+                Integer transSentenceIndex = speechTranscriberResponse.getTransSentenceIndex();
+                String transSentenceText = speechTranscriberResponse.getTransSentenceText();
+                logger.info(transSentenceText);
+                int length = transSentenceText.length();
+                int i = transSentenceText.lastIndexOf("，");
+                if("SentenceEnd".equals(speechTranscriberResponse.header.get("name"))){
+                    System.out.println(lastIndex + " " + length);
+                    transSentenceText = transSentenceText.substring(lastIndex, length);
+                    jsonObject.put("id",transSentenceIndex + charIndex);
+                    jsonObject.put("text",transSentenceText);
+                    cnMap.remove(transSentenceIndex);
+
+                }else if( cnMap.get(transSentenceIndex) == null){
+                    cnNum = 0;
+                    cnCount = 0;
+                    lastIndex =0;
+                    charIndex ="";
+                    transSentenceText = transSentenceText.substring(lastIndex, length);
+                    jsonObject.put("id",transSentenceIndex + charIndex);
+                    jsonObject.put("text",transSentenceText);
+                    cnMap.put(transSentenceIndex,lastIndex);
+                }else{
+                    cnNum ++;
+                    if(cnNum <30){
+                        transSentenceText = transSentenceText.substring(lastIndex, length);
+                        jsonObject.put("id",transSentenceIndex + charIndex);
+                        jsonObject.put("text",transSentenceText);
+                        //cnMap.put(transSentenceIndex,lastIndex);
+                    }else {
+                        if( length - i < 5){
+                            cnCount = cnCount +1;
+                            lastIndex = i+1;
+                            transSentenceText = transSentenceText.substring(lastIndex, length);
+                            charIndex =String.valueOf((char)(97+cnCount));
+
+                            jsonObject.put("id",transSentenceIndex + charIndex);
+                            jsonObject.put("text",transSentenceText);
+                            cnMap.put(transSentenceIndex,lastIndex);
+                            cnNum =0;
+
+                        }else {
+                            transSentenceText = transSentenceText.substring(lastIndex, length);
+                            jsonObject.put("id",transSentenceIndex + charIndex);
+                            jsonObject.put("text",transSentenceText);
+                        }
+
+                    }
+
+                }
+
+
+
+            }
+            System.out.println(jsonObject);
+                return jsonObject;
+            }
+
+      @Async
       public void sendMessageToWordService(String isOpen4G,String language){
         if("open".equals(isOpen4G)){
             logger.info("当前线程:   "+Thread.currentThread().getName()+"  4G开启，文字传输开始..........");
@@ -106,12 +188,12 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
                     if("CN".equals(language)){
                         if(!chineseQueue.isEmpty()){
                             JSONObject json = chineseQueue.take();
-                            httpUrlConnection.httpPost(address.getServerWordAddress(),JSONObject.toJSONString(json));
+                            httpUrlConnection.httpPost(address.getServerWordAddress()+"cnSound",JSONObject.toJSONString(json));
                         }
                     }else{
                         if (!englishQueue.isEmpty()){
                             JSONObject json =englishQueue.take();
-                            httpUrlConnection.httpPost(address.getServerWordAddress(),JSONObject.toJSONString(json));
+                            httpUrlConnection.httpPost(address.getServerWordAddress()+"enSound",JSONObject.toJSONString(json));
                         }
                     }
                 }catch (InterruptedException e){
@@ -123,11 +205,11 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
         }
       }
 
-       public void  onSendWordToUser(SpeechTranscriberResponse speechTranscriberResponse,String language,String userId,String soundCarName,String text,String isOpen4G){
-         String message =JSON.toJSONString(speechTranscriberResponse);
+       public void  onSendWordToUser(JSONObject jsonObject, String language, String userId, String soundCarName, String text, String isOpen4G){
+          String message =jsonObject.toString();
         // String text = speechTranscriberResponse.getTransSentenceText();
          // 将文字发送给局域网的用户
-         simpMessagingTemplate.convertAndSendToUser(userId,"/serverwebsoket"+soundCarName,message );
+         simpMessagingTemplate.convertAndSendToUser(userId,"/serverwebsoket/"+soundCarName,message );
          // 将文字发送至服务器，用于发送通过4G网络访问的用户
          if("open".equals(isOpen4G)){
              putMessageQueue(message,language,userId,text);
@@ -137,7 +219,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
        public void putMessageQueue(String message,String language,String userId,String text){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userId",userId);
-        jsonObject.put("JsonString",message);
+        jsonObject.put("jsonString",message);
         jsonObject.put("text",text);
           if("CN".equals(language)){
               jsonObject.put("soundCarName","cn");

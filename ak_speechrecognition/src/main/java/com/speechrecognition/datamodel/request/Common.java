@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Common {
+
     // 语音识别开启状态
     private static volatile Boolean isOpenSpeech = true;
    // 切换状态，只要切换就设为false
