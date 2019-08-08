@@ -118,6 +118,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
     }
         public JSONObject nextLineText(String lan,SpeechTranscriberResponse speechTranscriberResponse) {
             JSONObject jsonObject = null;
+            Object name = speechTranscriberResponse.header.get("name");
             if ("CN".equals(lan)) {
                 jsonObject = new JSONObject();
 
@@ -126,7 +127,8 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
                 logger.info(transSentenceText);
                 int length = transSentenceText.length();
                 int i = transSentenceText.lastIndexOf("，");
-                if("SentenceEnd".equals(speechTranscriberResponse.header.get("name"))){
+
+                if("SentenceEnd".equals(name)){
                     System.out.println(lastIndex + " " + length);
                     transSentenceText = transSentenceText.substring(lastIndex, length);
                     jsonObject.put("id",transSentenceIndex + charIndex);
@@ -174,6 +176,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
 
 
             }
+            jsonObject.put("state",name);
             System.out.println(jsonObject);
                 return jsonObject;
             }
