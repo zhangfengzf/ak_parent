@@ -1,3 +1,53 @@
-spring:
-  profiles:
-    active: dev
+server:
+  port: 8008
+logging:
+  file: "D:/startLog"
+  path: "D:/yyq/startLog/startLog.log"
+sound:
+  #根据语种类型，设置声卡名字
+  soundName:
+      - name: "cn"
+        #4G语音传输开启地址
+        speechTransmission4GStartURL: ""
+         #4G语音传输关闭地址
+        speechTransmission4GStopURL: ""
+        #局域网语音传输开启地址
+        speechTransmissionLocalStartURL: ""
+        #局域网语音传输关闭地址
+        speechTransmissionLocalStopURL: ""
+        #声卡所对应的语种类型
+        type: "CN"
+        #手机端访问声音的对应地址
+        webSound: "audioUrlCN"
+      - name: "en"
+        #4G语音传输开启地址
+        speechTransmission4GStartURL: ""
+        #4G语音传输关闭地址
+        speechTransmission4GStopURL: ""
+        #局域网语音传输开启地址
+        speechTransmissionLocalStartURL: ""
+        #局域网语音传输关闭地址
+        speechTransmissionLocalStopURL: ""
+        #声卡所对应的语种类型
+        type: "EN"
+        #手机端访问声音的对应地址
+        webSound: "audioUrlEN"
+  #启动时声卡数量
+  soundNumber: 2
+  #第三方接口地址
+  #文字传输接口开启地址
+  textTransmissionStartURL: ""
+  #文字传输接口关闭地址
+  textTransmissionStopURL: ""
+  #手机端访问文字的对应地址
+  webText: "asrUrl"
+  #nginx 页面的访问地址
+  webNginx: "webUrl"
+  #手机端页面文件访问地址
+  webFile: "http://ak.lan-bridge.cn:2356"
+  #json文件生成地址
+  jsonAddress: "D:/yyq/nginx/html"
+  #访问本地服务端地址
+  serverUrl: "http://127.0.0.1:8008"
+  #登录是页面访问服务器地址
+  adminUrl: "http://ak.lan-bridge.cn:6488"

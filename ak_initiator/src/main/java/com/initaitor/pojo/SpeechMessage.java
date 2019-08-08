@@ -1,8 +1,6 @@
-package com.initaitor.datamodel.dto;
+package com.initaitor.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -15,16 +13,21 @@ import java.util.Map;
  * @Version 1.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class SpeechMessage implements Serializable {
-    /*
-    * Ip:服务器ip地址
-    * soundCardAndNames:声卡名字和语种
-    * soundNumber:声卡数量
-    * */
+
+    /*服务器ip地址*/
     private String Ip;
+    /*声卡名字和语种*/
     private Integer soundNumber;
+    /*声卡数量*/
     private Map<String,String> soundCardAndNames;
+
+    public SpeechMessage() {}
+
+    public SpeechMessage(String ip, Integer soundNumber, Map<String, String> soundCardAndNames) {
+        Ip = ip;
+        this.soundNumber = soundNumber;
+        this.soundCardAndNames = soundCardAndNames;
+    }
 
 }
