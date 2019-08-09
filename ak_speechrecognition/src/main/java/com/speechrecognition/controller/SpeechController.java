@@ -26,7 +26,7 @@ public class SpeechController {
     private static NlsClient client;
     private static final Logger logger = LoggerFactory.getLogger(SpeechController.class);
     /**
-     * 首次开启语音识别配置
+     * 首次开启语音识别配置,  文字保存在本地
      */
     @GetMapping("config_speechRecognition" )
     public void  configSpeechRecognition(){
@@ -47,7 +47,7 @@ public class SpeechController {
 
         for(RequestModle requestModle:openSpeechRecognitionParam.getRequestList()){
 
-          recognitionTask.openSpeechTask(client,openSpeechRecognitionParam.getIsOpen4G(),openSpeechRecognitionParam.getUserId(),requestModle.getLanguageType(),requestModle.getSoundCarName());
+            recognitionTask.openSpeechTask(client,openSpeechRecognitionParam.getIsOpen4G(),openSpeechRecognitionParam.getUserId(),requestModle.getLanguageType(),requestModle.getSoundCarName());
            /* if(WebSockJsCount == 0)
             try{
                 webSocketJSClientl.SocketConnect(openSpeechRecognitionParam.getUserId());
@@ -71,12 +71,12 @@ public class SpeechController {
 
         Common.setIsOpenSpeech(false);
         Thread.sleep(1000);
-        if( null !=client ){
+        if( null != client ){
             logger.info("关闭语音识别........");
             speechClient.closeClient();
 
         }
-       // WebSockJsCount = 0;
+        // WebSockJsCount = 0;
         return "语音识别关闭成功";
     }
 
@@ -86,8 +86,9 @@ public class SpeechController {
      * @param
      * @return
      */
-    @RequestMapping("change_speechRecognition")
-    public String changeSoundCarAndLanguageStatus(String type){
+    @PostMapping ("change_speechRecognition")
+    public String changeSoundCarAndLanguageStatus(@RequestBody OpenSpeechRecognitionParam openSpeechRecognitionParam){
+        String type = openSpeechRecognitionParam.getType();
         //语音切换 中文声卡----英文语音 change    中文声卡---中文语音  normal
         Common.setSoundCarAndLanguageType(type);
         // 跳出循环，重启语音识别

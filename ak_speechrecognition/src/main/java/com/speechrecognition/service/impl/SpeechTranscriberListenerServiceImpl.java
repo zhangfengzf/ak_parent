@@ -55,6 +55,8 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
 
     @Override
     public SpeechTranscriberListener getSpeechTranscriberListener(String isOpen4G, String userId, String language, String soundCarName) {
+        System.out.println("识别线程:"+Thread.currentThread().getName()+ "  "+language );
+
 
         speechTranscriberListener = new SpeechTranscriberListener() {
             int count = 0;
@@ -108,7 +110,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
 
             @Override
             public void onFail(SpeechTranscriberResponse speechTranscriberResponse) {
-                logger.warn("语音识别：失败.....");
+
             }
         };
         return speechTranscriberListener;
@@ -122,10 +124,14 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
         Integer transSentenceIndex = speechTranscriberResponse.getTransSentenceIndex();
         String transSentenceText = speechTranscriberResponse.getTransSentenceText();
         int length = transSentenceText.length();
-        int i = transSentenceText.lastIndexOf("，");
+
         if ("CN".equals(lan)) {
+            int i = transSentenceText.lastIndexOf("，");
             if ("SentenceEnd".equals(name)) {
                 // SentenceEnd 事件表示服务端检测到了一句话的结束，并附带返回该句话的识别结果
+                if(length <= lastIndexCn){
+                    lastIndexCn = 0;
+                }
                 transSentenceText = transSentenceText.substring(lastIndexCn, length);
                 cnMap.remove(transSentenceIndex);
             } else if (cnMap.get(transSentenceIndex) == null) {
@@ -156,29 +162,33 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
             }
             jsonObject.put("id", transSentenceIndex + charIndexCn);
         }else {
+            int i = transSentenceText.lastIndexOf(". ");
             if ("SentenceEnd".equals(name)) {
+                if(length <= lastIndexEn){
+                    lastIndexEn = 0;
+                }
                 // SentenceEnd 事件表示服务端检测到了一句话的结束，并附带返回该句话的识别结果
                 transSentenceText = transSentenceText.substring(lastIndexEn, length);
-                cnMap.remove(transSentenceIndex);
-            } else if (cnMap.get(transSentenceIndex) == null) {
-                cnNum = 0;
-                cnCount = 0;
+                enMap.remove(transSentenceIndex);
+            } else if (enMap.get(transSentenceIndex) == null) {
+                enNum = 0;
+                enCount = 0;
                 lastIndexEn = 0;
                 charIndexEn = "";
                 transSentenceText = transSentenceText.substring(lastIndexEn, length);
-                cnMap.put(transSentenceIndex, lastIndexEn);
+                enMap.put(transSentenceIndex, lastIndexEn);
             } else {
-                cnNum++;
-                if (cnNum < 30) {
+                enNum++;
+                if (enNum < 30) {
                     transSentenceText = transSentenceText.substring(lastIndexEn, length);
                     //cnMap.put(transSentenceIndex,lastIndex);
                 } else {
                     if (length - i < 5) {
-                        cnCount = cnCount + 1;
+                        enCount = enCount + 1;
                         lastIndexEn = i + 1;
                         transSentenceText = transSentenceText.substring(lastIndexEn, length);
-                        charIndexEn = String.valueOf((char) (97 + cnCount));
-                        cnMap.put(transSentenceIndex, lastIndexEn);
+                        charIndexEn = String.valueOf((char) (97 + enCount));
+                        enMap.put(transSentenceIndex, lastIndexEn);
                         cnNum = 0;
                     } else {
                         transSentenceText = transSentenceText.substring(lastIndexEn, length);
@@ -189,13 +199,13 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
         }
         jsonObject.put("text", transSentenceText);
         jsonObject.put("state", name);
-        System.out.println(jsonObject);
+        System.out.println(lan+"----------"+jsonObject);
         return jsonObject;
     }
 
     @Async
     public void sendMessageToWordService(String isOpen4G, String language) {
-        if ("open".equals(isOpen4G)) {
+        if ("true".equals(isOpen4G)) {
             logger.info("当前线程:   " + Thread.currentThread().getName() + "  4G开启，文字传输开始..........");
             // 切换语音或者关闭语音识别时，需要结束当前线程，跳出循环
             while (Common.getIsOpenSpeech() && Common.getSoundCarAndLanguageState()) {
@@ -226,7 +236,7 @@ public class SpeechTranscriberListenerServiceImpl implements SpeechTranscriberLi
         // 将文字发送给局域网的用户
         simpMessagingTemplate.convertAndSendToUser(userId, "/serverwebsoket/" + soundCarName, message);
         // 将文字发送至服务器，用于发送通过4G网络访问的用户
-        if ("open".equals(isOpen4G)) {
+        if ("true".equals(isOpen4G)) {
             putMessageQueue(message, language, userId, text);
         }
     }
