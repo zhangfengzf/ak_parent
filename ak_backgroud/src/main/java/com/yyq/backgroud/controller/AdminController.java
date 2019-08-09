@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "用户管理Api" ,description = "用户管理接口，管理员操作")
 @RequestMapping("yyq")
 @RestController
-public class AdminUserController {
+public class AdminController {
 
     @Autowired
     private UserService userService;
+
     @ApiOperation(value = "添加用户",notes = "只有管理员有权限添加用户")
-    @PostMapping(value="/add",consumes ="application/json")
+    @PostMapping(value="/add",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseModel addUser(@ApiParam(name = "user",value = "user用户信息",required = true)
                                      @RequestBody User user){
         try{
@@ -31,24 +32,21 @@ public class AdminUserController {
         return new ResponseModel("","error","添加失敗！",false);
     }
 
-    @ApiOperation(value = "修改用户信息")
+    @ApiOperation(value = "修改用户")
     @PostMapping(value = "/update" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateUser(@ApiParam(name = "user",value = "user用户信息",required = true)
-                                     @RequestBody User user){
-        return ResponseEntity.ok( userService.updateUserMessage(user));
-    }
-    @ApiOperation(value = "删除用户信息",notes = "只有管理员有权限")
-    @GetMapping (value = "/delete")
-    public ResponseEntity deleteUser(@ApiParam(name = "username",value = "用户名",required = true)
-                                     @RequestParam("username") String username){
-        return ResponseEntity.ok(userService.deleteUserMessage(username));
-    }
+    public ResponseEntity updateUser(@ApiParam(name = "user",value = "user用户信息",required = true) @RequestBody User user){
+        try{
+            return ResponseEntity.ok( userService.updateUserMessage(user));
+        }catch (Exception e){
+            e.printStackTrace();
+            return  ResponseEntity.ok(new ResponseModel("","error","修改用户失败！",false));
+        }
 
-    @ApiOperation(value = "查询用户信息",notes = "根据用户名查询用户信息")
-    @GetMapping (value = "/queryUser")
-    public ResponseEntity query(@ApiParam(name = "username",value = "用户名",required = true)
-                                @RequestParam("username") String username){
-        return ResponseEntity.ok( new ResponseModel(userService.getUserByName(username),"","",true));
+    }
+    @ApiOperation(value = "删除用户")
+    @GetMapping (value = "/delete")
+    public ResponseEntity deleteUser(@ApiParam(name = "username",value = "用户名",required = true) @RequestParam("username") String username){
+        return ResponseEntity.ok(userService.deleteUserMessage(username));
     }
 
     @ApiOperation(value = "用户列表",notes = "分页查询所有用户，并支持模糊查询")
@@ -62,20 +60,25 @@ public class AdminUserController {
 
     @ApiOperation(value = "重置用户密码",notes = "只有管理员有权限")
     @GetMapping (value = "/resetpassword")
-    public ResponseEntity resetPassword(@ApiParam(name = "username",value = "用户名",required = true)
-                                     @RequestParam("username") String username){
+    public ResponseEntity resetPassword(@ApiParam(name = "username",value = "用户名",required = true)@RequestParam("username") String username){
         userService.resetPassword(username);
         return ResponseEntity.ok( new ResponseModel("","","重置密码成功！",true));
     }
     @ApiOperation(value = "用户状态",notes = "修改用户状态，设置停用或者启用状态")
     @GetMapping (value = "/userState")
-    public void updateUserState(@ApiParam(name = "username",value = "用户名",required = true)
-                                    @RequestParam("username") String username,
-                                @ApiParam(name = "state",value = "用户状态",required = true)
-                                @RequestParam("state") String state){
+    public ResponseEntity updateUserState(@ApiParam(name = "username",value = "用户名",required = true)@RequestParam("username") String username,
+                                @ApiParam(name = "state",value = "用户状态",required = true) @RequestParam("state") String state){
         userService.updateUserState(username,state);
+        return ResponseEntity.ok( new ResponseModel("","","操作成功！",true));
 
     }
+
+    @ApiOperation(value = "查询用户信息",notes = "根据用户名查询用户信息")
+    @GetMapping (value = "/queryUser")
+    public ResponseEntity query(@ApiParam(name = "username",value = "用户名",required = true) @RequestParam("username") String username){
+        return ResponseEntity.ok( new ResponseModel(userService.getUserByName(username),"","",true));
+    }
+
 
     /**
      *   不支持分页，弃用

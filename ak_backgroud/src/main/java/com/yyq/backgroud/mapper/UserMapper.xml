@@ -48,7 +48,11 @@
         insert into sys_users_role(user_name) value (#{username})
     </insert>
     <select id="getUserByName" resultMap="loadUserMap">
-        select *  from sys_user where user_name = #{username}
+        select id,user_name,user_realname,password,department,telphone,
+        case when user_scope =1 then '内部用户' else '外部用户' end as user_scope,
+        case when user_type =1 then '长期用户'  else '单次用户' end as user_type,
+        case when user_state =1 then '已启用'  else '已停用' end as user_state,
+        create_time from sys_user where user_name = #{username}
     </select>
 
     <insert id="insertUser" parameterType="com.yyq.backgroud.bean.User">
@@ -73,16 +77,44 @@
         , user_state = #{state} where user_name = #{username}
     </update>
     <select id="queryAllUser" resultMap="BaseResultMap">
-        <include refid="selectColumn"/>
+       select *  from sys_user
     </select>
     <update id="deleteUser">
-          update  sys_user set isdelete = '1' where user_name = #{username}
+          update  sys_user set isdelete = 1 where user_name = #{username}
     </update>
     <update id="updateRoleByUserName">
       update sys_users_role  a set a.role_id = #{roleId} where user_name = #{username}
     </update>
     <select id="findAllUserByPage" resultMap="BaseResultMap">
-          <include refid="selectColumn"/>
+        select id,user_name,user_realname,department,
+        case when user_scope =1 then '内部用户' else '外部用户' end as user_scope,
+        case when user_type =1 then '长期用户'  else '单次用户' end as user_type,
+        case when user_state =1 then '已启用'  else '已停用' end as user_state,
+        create_time
+        from sys_user
+        where 1=1 and isdelete = 0
+       /* mybatis 中 模糊查询 不支持 username != '' */
+        <if test="user.username != null  &amp;&amp; user.username.length()>0" >
+            and user_name like concat('%',#{user.username},'%')
+        </if>
+        <if test="user.realName != null  &amp;&amp; user.realName.length()>0">
+            and user_realname like  concat('%',#{user.realName},'%')
+        </if>
+        <if test ="startT != ''">
+            and UNIX_TIMESTAMP(#{startT})  <![CDATA[   <=  ]]> UNIX_TIMESTAMP(create_time)
+        </if>
+        <if test ="endT != ''">
+            and UNIX_TIMESTAMP(#{endT})  <![CDATA[   >=  ]]> UNIX_TIMESTAMP(create_time)
+        </if>
+        <if test="user.state != null &amp;&amp; user.state.length()>0 ">
+            and user_state = #{user.state}
+        </if>
+        <if test="user.userScope != null &amp;&amp; user.userScope.length()>0 ">
+            and user_scope = #{user.userScope}
+        </if>
+        <if test="user.userType !=null &amp;&amp;user.userType.length()>0 ">
+            and user_type = #{user.userType}
+        </if>
           order by id
     </select>
 

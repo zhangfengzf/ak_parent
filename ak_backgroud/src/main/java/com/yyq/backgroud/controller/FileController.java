@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 @Api(value = "文件上传下载")
 @RequestMapping("/file")
@@ -38,25 +35,21 @@ public class FileController {
         return ResponseEntity.ok(new ResponseModel(filepath,"","文件上传成功！",true));
 
     }
-    @ApiOperation(value = "海报下载")
-    @RequestMapping(value = "/down",method = RequestMethod.POST)
-    public ResponseEntity downfile(@RequestParam("path") String path){
-        FileOutputStream fileOutputStream = null;
-        BufferedOutputStream bufferedOutputStream = null;
-
+    /*@ApiOperation(value = "海报下载")
+    @RequestMapping(value = "/down",method = RequestMethod.GET)
+    public ResponseEntity downfile( String filepath,String filetargetpath){
         try{
-            File file = new File(path);
-            fileOutputStream = new FileOutputStream(file);
-            bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-            if(file.exists()){
-
+            File file = new File(path + filepath);
+            InputStream inputStream =  new FileInputStream(file);
+            OutputStream outputStream = new FileOutputStream(new File(filetargetpath));
+            byte[] b = new byte[1204];
+            while( -1 != inputStream.read(b)){
+                outputStream.write(b);
             }
-
         }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-
+             e.printStackTrace();
         }
+
         return ResponseEntity.ok(new ResponseModel("","","文件下载失败！",false));
-    }
+    }*/
 }

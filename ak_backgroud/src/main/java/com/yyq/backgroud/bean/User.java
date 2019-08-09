@@ -1,5 +1,6 @@
 package com.yyq.backgroud.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,9 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,18 +28,24 @@ public class User implements UserDetails {
     private String userScope;                        // 用户范围
     private String userType;                         // 用户类型
     private String state;                            // 用户状态
-    private Timestamp createTime;                    // 创建时间
-    private String isDelete;                         // 删除标记
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date createTime;                         // 创建时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private String[] startTime;                        // 开始时间+结束时间
+    private String isDelete;                           // 删除标记
     @JsonIgnore
-    private List<Role> roles;                        // 角色
+    private List<Role> roles;                         // 角色
 
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-       for(Role role : roles){
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleCode()));
+       if(roles != null){
+           for(Role role : roles){
+               grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleCode()));
+           }
        }
+
         return grantedAuthorities;
     }
     @Override
@@ -56,8 +63,10 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        if(isDelete.equals("1")){
-            return  false;
+        if(isDelete != null){
+            if(isDelete.equals("1")){
+                return  false;
+            }
         }
         return true;
     }
@@ -92,4 +101,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }
