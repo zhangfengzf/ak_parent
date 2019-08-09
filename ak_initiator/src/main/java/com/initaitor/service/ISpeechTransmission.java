@@ -1,6 +1,7 @@
 package com.initaitor.service;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import static com.initaitor.util.RequestUtil.loadRequest;
@@ -14,13 +15,15 @@ import static com.initaitor.util.RequestUtil.loadRequest;
  * @Version 1.0
  */
 @Service
+@Log
 public class ISpeechTransmission implements SpeechTransmission {
 
     @Override
     public void start4GSpeechTransmission(String url, String meetingId, String transportType, String soundName) throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("soundName", soundName);
-        jo.put("meetingId", meetingId);
+        jo.put("meetingID", meetingId);
+        log.info("语音传输:" + jo);
         loadRequest(url, jo, transportType);
     }
 

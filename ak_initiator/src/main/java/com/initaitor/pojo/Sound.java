@@ -2,6 +2,7 @@ package com.initaitor.pojo;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -15,25 +16,21 @@ import java.io.Serializable;
  */
 @Data
 @Component
+@ConfigurationProperties("sound")
 public class Sound implements Serializable {
 
-    @Value("${sound.soundNumber}")
     private Integer soundNumber;
-    @Value("${sound.textTransmissionStartURL}")
     private String textTransmissionStartURL;
-    @Value("${sound.textTransmissionStopURL}")
     private String textTransmissionStopURL;
-    @Value("${sound.webText}")
     private String webText;
-    @Value("${sound.webNginx}")
     private String webNginx;
-    @Value("${sound.webFile}")
     private String webFile;
-    @Value("${sound.jsonAddress}")
     private String jsonAddress;
-    @Value("${sound.serverUrl}")
     private String serverUrl;
-    @Value("${sound.adminUrl}")
     private String adminUrl;
+    private String meetingID;
+    private String speechTransmissionChangeURLCN;
+    private String speechTransmissionChangeURLEN;
+    private String textTransmissionChangeURL;
 
 }

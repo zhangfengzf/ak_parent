@@ -1,53 +1,60 @@
 server:
   port: 8008
 logging:
-  file: "D:/startLog"
-  path: "D:/yyq/startLog/startLog.log"
+  file: D:/startLog
+  path: D:/yyq/startLog/startLog.log
 sound:
   #根据语种类型，设置声卡名字
   soundName:
-      - name: "cn"
+      - name: cn
         #4G语音传输开启地址
-        speechTransmission4GStartURL: ""
+        speechTransmission4GStartURL: http://127.0.0.1:8342/send/sendOn
          #4G语音传输关闭地址
-        speechTransmission4GStopURL: ""
+        speechTransmission4GStopURL: http://127.0.0.1:8342/send/sendOff
         #局域网语音传输开启地址
         speechTransmissionLocalStartURL: ""
         #局域网语音传输关闭地址
         speechTransmissionLocalStopURL: ""
         #声卡所对应的语种类型
-        type: "CN"
+        type: CN
         #手机端访问声音的对应地址
-        webSound: "audioUrlCN"
-      - name: "en"
+        webSound: audioUrlCN
+      - name: en
         #4G语音传输开启地址
-        speechTransmission4GStartURL: ""
+        speechTransmission4GStartURL: http://127.0.0.1:8341/send/sendOn
         #4G语音传输关闭地址
-        speechTransmission4GStopURL: ""
+        speechTransmission4GStopURL: http://127.0.0.1:8341/send/sendOff
         #局域网语音传输开启地址
         speechTransmissionLocalStartURL: ""
         #局域网语音传输关闭地址
         speechTransmissionLocalStopURL: ""
         #声卡所对应的语种类型
-        type: "EN"
+        type: EN
         #手机端访问声音的对应地址
-        webSound: "audioUrlEN"
+        webSound: audioUrlEN
   #启动时声卡数量
   soundNumber: 2
   #第三方接口地址
   #文字传输接口开启地址
-  textTransmissionStartURL: ""
+  textTransmissionStartURL: http://127.0.0.1:8081/yyq/speech/open_speechRecognition
   #文字传输接口关闭地址
-  textTransmissionStopURL: ""
+  textTransmissionStopURL: http://127.0.0.1:8081/yyq/speech/close_speechRecognition
+  #文字切换接口
+  textTransmissionChangeURL: http://127.0.0.1:8081/yyq/speech/change_speechRecognition
+  #语音切换
+  speechTransmissionChangeURLCN: http://127.0.0.1:8342/send/change
+  speechTransmissionChangeURLEN: http://127.0.0.1:8341/send/change
   #手机端访问文字的对应地址
-  webText: "asrUrl"
+  webText: asrUrl
   #nginx 页面的访问地址
-  webNginx: "webUrl"
+  webNginx: webUrl
   #手机端页面文件访问地址
-  webFile: "http://ak.lan-bridge.cn:2356"
+  webFile: http://ak.lan-bridge.cn:2356
   #json文件生成地址
-  jsonAddress: "D:/yyq/nginx/html"
+  jsonAddress: D:/yyq/nginx/html
   #访问本地服务端地址
-  serverUrl: "http://127.0.0.1:8008"
+  serverUrl: http://127.0.0.1:8008
   #登录是页面访问服务器地址
-  adminUrl: "http://ak.lan-bridge.cn:6488"
+  adminUrl: http://ak.lan-bridge.cn:6488
+  #启动会议对应的ID
+  meetingID: ""

@@ -1,6 +1,5 @@
 package com.initaitor.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.initaitor.pojo.*;
 import com.initaitor.service.FileGeneration;
 import com.initaitor.service.SpeechTransmission;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import static com.initaitor.util.GetSoundCordUtil.addSpeechMessage;
-import static com.initaitor.util.NetworkState.interTimers;
 
 
 /**
@@ -50,12 +48,12 @@ public class StartController {
 
         /*对应的会议id*/
         String id = mis.getId();
+        sound.setMeetingID(id);
         /*开启的状态true为4G，false为局域网*/
         stat = Boolean.valueOf(mis.getStatus());
         /*声卡信息判断*/
         SpeechMessage sm = addSpeechMessage(soundName.getSoundName());
-
-        if (!startID.equals("0")){
+        if (!startID.equals("0")&&!id.equals(startID)){
             return new ResponseEntity(0, "启动失败，同一台设备不能开启两场会议！ 请关闭已开启会议，在开启该会议");
         }
         /*用户声卡连接错误后第二次连入*/
@@ -77,12 +75,12 @@ public class StartController {
                 }
             }
         }
-        if (!sound.getSoundNumber().equals(sm.getSoundNumber())) {
+        if (!String.valueOf(sound.getSoundNumber()).equals(String.valueOf(sm.getSoundNumber()))) {
             soundError = false;
             return new ResponseEntity(0, "启动失败，声卡连接错误！");
         }
         /*判断网络状况*/
-        interTimers();
+//        interTimers();
         /*语音传输*/
         try {
             if (stat) {
@@ -90,7 +88,7 @@ public class StartController {
                 for (int i = 0; i <soundName.getSoundName().size() ; i++) {
                     speechTransmission.start4GSpeechTransmission(soundName.getSoundName().get(i).get("speechTransmission4GStartURL"),
                             id,
-                            "post",
+                            "POST",
                             soundName.getSoundName().get(i).get("name"));
                 }
             } else {
@@ -101,7 +99,7 @@ public class StartController {
                 for (int i = 0; i <soundName.getSoundName().size() ; i++) {
                     speechTransmission.startLocalSpeechTransmission(soundName.getSoundName().get(i).get("speechTransmission4GStartURL"),
                             id,
-                            "post");
+                            "POST");
                 }
             }
         } catch (Exception e) {
@@ -110,10 +108,12 @@ public class StartController {
         }
         /*文字传输*/
         try {
-            textTransmission.startTextTransmission("","post");
+            /*关闭文字传输*/
+            textTransmission.stopTextTransmission(sound.getTextTransmissionStopURL(),"POST");
+            textTransmission.startTextTransmission(sound.getTextTransmissionStartURL(),soundName.getSoundName(),"POST",id,mis.getStatus());
         } catch (Exception e) {
             e.getMessage();
-            return new ResponseEntity(1, "启动失败，文字传输启动失败！");
+            return new ResponseEntity(1, "文字传输启动失败！");
         }
         /*记录会议ID，判断该会议的状态*/
         startID = mis.getId();
@@ -124,21 +124,20 @@ public class StartController {
     //关闭程序
     @PostMapping(value = "/close")
     public String close() {
-
         try {
             for (int i = 0; i <soundName.getSoundName().size() ; i++) {
                 if (stat){
                     /*关闭4G语音传输*/
                     speechTransmission.stop4GSpeechTransmission(soundName.getSoundName().get(i).get("speechTransmission4GStopURL"),
-                            "post");
+                            "POST");
                 }else {
                     /*关闭局域网语音传输*/
                     speechTransmission.stopLocalSpeechTransmission(soundName.getSoundName().get(i).get("speechTransmissionLocalStopURL"),
-                            "post");
+                            "POST");
                 }
             }
             /*关闭文字传输*/
-            textTransmission.stopTextTransmission("","post");
+            textTransmission.stopTextTransmission(sound.getTextTransmissionStopURL(),"POST");
         }catch (Exception e){
             e.getMessage();
             return "false";
@@ -150,11 +149,7 @@ public class StartController {
 
     //判断系统开启的状态
     @PostMapping(value = "/disabled")
-    public Boolean disabled(@RequestBody String id) {
-
-        JSONObject jo = JSONObject.parseObject(id);
-        String meetingID = (String) jo.get("id");
-        return startID.equals(meetingID);
-
+    public Boolean disabled(@RequestBody MeetingIdAndStatus mis) {
+        return startID.equals(mis.getId());
     }
 }
