@@ -25,9 +25,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class JwtFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtFilterLogin extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
-    public JwtFilter(AuthenticationManager authenticationManager){
+    public JwtFilterLogin(AuthenticationManager authenticationManager){
         this.authenticationManager =authenticationManager;
     }
     @Override
@@ -35,7 +35,6 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
         try {
 
             User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-           // response.addHeader("Access-Control-Allow-Origin","*");
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             user.getUsername(),
@@ -53,7 +52,7 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         ResponseModel responseModel = null;
         if(failed instanceof BadCredentialsException){
-            responseModel = new ResponseModel("","error","用户名或者密码错误",false);
+            responseModel = new ResponseModel("","error","用户名或者密码错误！",false);
         }else if(failed instanceof LockedException){
             responseModel = new ResponseModel("","error","该账号已被注销！",false);
         }
@@ -74,20 +73,13 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
 
         List<Role> roles = ((User)authResult.getPrincipal()).getRoles();
         User user =(User)authResult.getPrincipal();
-/*        List<String> role = new ArrayList<>();
-        if(roles.isEmpty()){
-            return;
-        }
-        for(Role role1 : roles){
-            role.add(role1.getRoleCode());
-        }*/
         String token ="";
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();
         // 设置签发时间
         calendar.setTime(new Date());
         // 设置过期时间
-        calendar.add(Calendar.HOUR, 10);// 10分钟
+        calendar.add(Calendar.HOUR, 10);// 10小时
         Date time = calendar.getTime();
         token =Jwts.builder()
                 .setSubject(user.getUsername()+"-"+roles.get(0).getRoleCode())

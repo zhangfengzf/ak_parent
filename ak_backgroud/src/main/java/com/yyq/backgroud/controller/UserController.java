@@ -11,23 +11,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("user")
 @RestController
-@Api(value = "个人信息",description = "个人信息接口")
+@Api(value = "个人信息", description = "个人信息接口")
 public class UserController {
     @Autowired
     private UserService userService;
-    @ApiOperation(value = "个人信息",notes = "查询个人信息")
+
+    @ApiOperation(value = "个人信息", notes = "查询个人信息")
     @PostMapping(value = "/queryUser")
-    public ResponseEntity query(){
+    public ResponseEntity query() {
         String currentUsername = UserUtil.getCurrentUser();
         userService.getUserByName(currentUsername);
-        return ResponseEntity.ok(new ResponseModel(userService.getUserByName(currentUsername),"","",true));
+        return ResponseEntity.ok(new ResponseModel(userService.getUserByName(currentUsername), "", "", true));
     }
-    @ApiOperation(value = "修改密码")
-    @GetMapping(value = "/resetpassword")
-    public ResponseEntity resetPassword(@RequestParam("password") String password,
-                                        @RequestParam("newpassword") String newpassword ){
 
-        return ResponseEntity.ok( userService.resetPassword(password,newpassword));
+    @ApiOperation(value = "修改密码")
+    @GetMapping(value = "/resetPassword")
+    public ResponseEntity resetPassword(@RequestParam("password") String password,@RequestParam("newpassword") String newpassword) {
+
+        return ResponseEntity.ok(userService.resetPassword(password, newpassword));
     }
 
 }

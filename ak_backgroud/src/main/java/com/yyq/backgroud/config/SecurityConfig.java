@@ -1,7 +1,7 @@
 package com.yyq.backgroud.config;
 
 import com.yyq.backgroud.filter.JwtAuthorizationFilter;
-import com.yyq.backgroud.filter.JwtFilter;
+import com.yyq.backgroud.filter.JwtFilterLogin;
 import com.yyq.backgroud.filter.MyAccessDecisionManager;
 import com.yyq.backgroud.filter.MySecurityMetadataSource;
 import com.yyq.backgroud.handler.CustomAccessDeniedHandler;
@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         }
                     })
                      .and().
-                     addFilter(new JwtFilter(authenticationManager()))
+                     addFilter(new JwtFilterLogin(authenticationManager()))
                      .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                     .formLogin().loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/index").permitAll()
                      .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler).and()

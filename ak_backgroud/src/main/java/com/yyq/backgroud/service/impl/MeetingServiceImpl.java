@@ -20,8 +20,9 @@ import java.util.List;
 public class MeetingServiceImpl implements MeetingService {
     @Autowired
     MeetingMapper meetingMapper;
+
     @Override
-    public Object addMeeting(Meeting meeting) {
+    public Object addMeeting(Meeting meeting) throws Exception {
         User user = new User();
         String userName = UserUtil.getCurrentUser();
         user.setUsername(userName);
@@ -86,13 +87,13 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public PageResult findAllMeeting(PageRequest pageRequest) {
-        return  PageUtil.getPageResult(pageRequest,getPageInfo(pageRequest));
+        return PageUtil.getPageResult(pageRequest, getPageInfo(pageRequest));
     }
 
-    public PageInfo getPageInfo(PageRequest pageRequest){
+    public PageInfo getPageInfo(PageRequest pageRequest) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<Meeting> meetings = meetingMapper.selectMeetingPage(getCurrentUser());
         return new PageInfo(meetings);
 
@@ -102,23 +103,23 @@ public class MeetingServiceImpl implements MeetingService {
     public PageResult fuzzyQueryMeetingByPage(RequestModel requestModel) {
         PageRequest pageRequest = requestModel.getPageRequest();
         Meeting meeting = requestModel.getMeeting();
-        if( meeting != null){
+        if (meeting != null) {
             User user = meeting.getUser();
-            if(user == null){
+            if (user == null) {
                 String currentUserName = UserUtil.getCurrentUser();
                 User newuser = new User();
                 newuser.setUsername(currentUserName);
                 meeting.setUser(newuser);
             }
-        }else{
+        } else {
             meeting = new Meeting();
         }
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<Meeting> meetingList = meetingMapper.queryMeetingLikeMeeting(meeting);
         PageInfo<Meeting> pageInfo = new PageInfo(meetingList);
-        return PageUtil.getPageResult(pageRequest,pageInfo);
+        return PageUtil.getPageResult(pageRequest, pageInfo);
 
     }
 

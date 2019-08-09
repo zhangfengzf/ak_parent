@@ -14,13 +14,16 @@ import javax.sound.sampled.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *  语音识别任务类： 读取声卡信息，将声卡音频流传输至阿里，必须满足阿里语音识别的格式！
+ */
 @Component
 public class RecognitionTask {
     @Autowired
     private SpeechTranscriberListenerService speechTranscriberListenerService;
     @Autowired
     private SpeechClient speechClient;
-    private SpeechTranscriber speechTranscriber;
+    //private SpeechTranscriber speechTranscriber;
     private static final Logger logger = LoggerFactory.getLogger(RecognitionTask.class);
     private volatile Map<Thread,Boolean>  map = new HashMap<>();
 
@@ -47,7 +50,7 @@ public class RecognitionTask {
             targetDataLine = (TargetDataLine) mixer.getLine(info);
             targetDataLine.open();
             targetDataLine.start();
-            speechTranscriber = new SpeechTranscriber(client, speechTranscriberListenerService.getSpeechTranscriberListener(isOpen4G, userId, language, soundCarName));
+            SpeechTranscriber speechTranscriber = new SpeechTranscriber(client, speechTranscriberListenerService.getSpeechTranscriberListener(isOpen4G, userId, language, soundCarName));
             speechTranscriberListenerService.sendMessageToWordService(isOpen4G, language);
             //根据语种类型 选择对应的AppKey
             speechTranscriber.setAppKey("CN".equals(language) ? speechClient.getAppKeyCn() : speechClient.getAppKeyEn());
@@ -64,12 +67,16 @@ public class RecognitionTask {
                 try {
                     speechTranscriber.send(voiceByte);
                 } catch (Exception e) {
-                    logger.info("长时间没有发送数据到阿里服务端.......");
+                    // 判断是否是因为阿里语音识别内部问题， 导致跳出循环！
                     flag = false;
+                    logger.info("长时间没有发送数据到阿里服务端.......");
                 }
             } while (flag && Common.getSoundCarAndLanguageState() && Common.getIsOpenSpeech() && Common.getScheduleTaskstate());
             //map.put(Thread.currentThread(),false);
-            speechTranscriber.stop();
+            // 阿里有时会自动关闭语音识别，重复关闭会报错
+            if(!flag){
+                speechTranscriber.stop();
+            }
             targetDataLine.close();
             // Common.getIsOpenSpeech() : true  并不是停止了语音识别，因为某些原因跳出循环
             if (Common.getIsOpenSpeech()) {
@@ -87,18 +94,24 @@ public class RecognitionTask {
                         }
                         this.notifyAll();
                     }*/
-                    Thread.sleep(500); // 休眠0.5s，防止另一线程未跳出循环。
+                    Thread.sleep(100); // 休眠0.5s，防止另一线程未跳出循环。
                     Common.setScheduleTaskstate(true);
-                    Common.setSoundCarAndLanguageState(true);
+
 
                 }
+                Thread.sleep(100);
+                Common.setSoundCarAndLanguageState(true);
                 // 2.判断跳出循环是否因为切换语音
                 if ("normal".equals(Common.getSoundCarAndLanguageType())) {
+                    //  2.1切换状态：声卡  --> 语种 cn  ----->  EN      en -----> CN
+
                     logger.info("声卡与语音类型处于“normal”（正常状态），重启中.........");
+                    language =  "cn".equals(soundCarName)? "CN": "EN";
                     openSpeechTask(client, isOpen4G, userId, language, soundCarName);
                 } else {
+                    //  2.2切换状态：声卡  --> 语种 cn  ----->  EN      en -----> CN
                     logger.info("声卡与语音类型处于“change” (切换状态)， 重启中.........");
-                    language = "CN".equals(language) ? "EN" : "CN";
+                    language =  "cn".equals(soundCarName)? "EN":"CN";
                     openSpeechTask(client, isOpen4G, userId, language, soundCarName);
                 }
             }
@@ -118,6 +131,7 @@ public class RecognitionTask {
         int sampleSize = 16;
         boolean bigEndian = false;
         int channels = 1;
+
         return new AudioFormat(encoding, rate, sampleSize, channels, (sampleSize / 8) * channels, rate, bigEndian);
     }
 

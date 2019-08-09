@@ -11,7 +11,7 @@ public interface MeetingService {
     /**
      * 添加会议
      */
-    Object addMeeting(Meeting meeting) ;
+    Object addMeeting(Meeting meeting) throws Exception ;
 
     /**
      * 修改会议

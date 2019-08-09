@@ -23,7 +23,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
         Iterator<ConfigAttribute> iterable =collection.iterator();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if(iterable.hasNext()){
+        while(iterable.hasNext()){
             ConfigAttribute configAttribute = iterable.next();
             String config= configAttribute.getAttribute();
             if (authentication instanceof AnonymousAuthenticationToken) {

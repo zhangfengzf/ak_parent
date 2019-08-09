@@ -18,7 +18,7 @@ public interface UserService {
      * 修改用户信息
      * @param user
      */
-    Object updateUserMessage(User user);
+    Object updateUserMessage(User user) throws Exception;
 
     /**
      *   查询用户信息
@@ -31,7 +31,7 @@ public interface UserService {
      *  删除用户信息
      * @param
      */
-    Object deleteUserMessage(String userName);
+    Object deleteUserMessage(String userName) ;
 
     /**
      *
