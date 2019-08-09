@@ -32,5 +32,6 @@ public class Sound implements Serializable {
     private String speechTransmissionChangeURLCN;
     private String speechTransmissionChangeURLEN;
     private String textTransmissionChangeURL;
+    private String record;
 
 }

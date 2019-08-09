@@ -2,6 +2,7 @@ package com.initaitor.controller;
 
 import com.initaitor.pojo.*;
 import com.initaitor.service.FileGeneration;
+import com.initaitor.service.Record;
 import com.initaitor.service.SpeechTransmission;
 import com.initaitor.service.TextTransmission;
 import lombok.extern.java.Log;
@@ -34,6 +35,8 @@ public class StartController {
     private SoundName soundName;
     @Autowired
     private FileGeneration fileGeneration;
+    @Autowired
+    private Record record;
     /*声卡连接后，程序需要一段时间才能获取到声卡信息*/
     private Boolean soundError = true;
     /*while 循环次数，当大于6次说明声卡还是没有正确连接*/
@@ -67,7 +70,7 @@ public class StartController {
                         ++numberCirculation;
                         Thread.sleep(3000);
                     }catch (Exception e){
-                        e.getMessage();
+                        log.info(e.getMessage());
                         return new ResponseEntity(0, "启动失败，睡眠出现异常！");
                     }
                 }else {
@@ -103,7 +106,7 @@ public class StartController {
                 }
             }
         } catch (Exception e) {
-            e.getMessage();
+            log.info(e.getMessage());
             return new ResponseEntity(1, "启动失败，语音传输启动失败，请检查网络是否连接正确！");
         }
         /*文字传输*/
@@ -112,8 +115,15 @@ public class StartController {
             textTransmission.stopTextTransmission(sound.getTextTransmissionStopURL(),"POST");
             textTransmission.startTextTransmission(sound.getTextTransmissionStartURL(),soundName.getSoundName(),"POST",id,mis.getStatus());
         } catch (Exception e) {
-            e.getMessage();
+            log.info(e.getMessage());
             return new ResponseEntity(1, "文字传输启动失败！");
+        }
+        //开启语音录音功能
+        try {
+            record.recordSound(sound.getRecord(),mis.getId(),"POST");
+        }catch (Exception e){
+            log.info(e.getMessage());
+            return new ResponseEntity(1, "录音启动失败！");
         }
         /*记录会议ID，判断该会议的状态*/
         startID = mis.getId();

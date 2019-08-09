@@ -58,3 +58,5 @@ sound:
   adminUrl: http://ak.lan-bridge.cn:6488
   #启动会议对应的ID
   meetingID: ""
+  #录音地址
+  record: http://momeeting.lan-bridge.cn:8005/server/fileOn
