@@ -3,6 +3,7 @@ package com.yyq.backgroud.controller;
 import com.yyq.backgroud.model.ResponseModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,8 @@ import java.io.*;
 @RequestMapping("/file")
 @RestController
 public class FileController {
-    private String path ="D:\\ak\\";
+    @Value("${auto.path}")
+    private String path;
     @ApiOperation(value = "上传海报")
     @RequestMapping(value = "uploadBill",method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity upload(@RequestParam("file") MultipartFile file) {

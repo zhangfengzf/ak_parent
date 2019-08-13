@@ -74,7 +74,7 @@
     <update id="updateUser" parameterType="com.yyq.backgroud.bean.User">
          update sys_user set  user_realname = #{realName} , password = #{password}
         , telphone = #{telphone} , department = #{department} , user_scope = #{userScope} , user_type = #{userType}
-        , user_state = #{state} where user_name = #{username}
+         where user_name = #{username}
     </update>
     <select id="queryAllUser" resultMap="BaseResultMap">
        select *  from sys_user
@@ -117,6 +117,9 @@
         </if>
           order by id
     </select>
+    <update id="updateState">
+        update sys_user set user_state = #{state} where user_name = #{name}
+    </update>
 
 
 </mapper>

@@ -43,6 +43,7 @@ pagehelper:
 
 auto:
   resetpassword: 123456
+  path: D:\ak\
 
 
 

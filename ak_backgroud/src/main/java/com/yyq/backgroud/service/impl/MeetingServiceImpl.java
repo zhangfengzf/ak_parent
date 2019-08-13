@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,15 +38,15 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public Object deleteMeeting(Integer id) {
-        return meetingMapper.deleteMeetingById(id);
+    public void deleteMeeting(Integer id) {
+         meetingMapper.deleteMeetingById(id);
     }
 
 
     @Override
-    public ResponseModel queryMeetingByUserName() {
+    public  List<Meeting> queryMeetingByUserName() {
         List<Meeting> meetings = meetingMapper.queryMeeting(getCurrentUser());
-        return new ResponseModel(meetings, "", "", true);
+        return meetings;
     }
 
     @Override
@@ -107,9 +108,9 @@ public class MeetingServiceImpl implements MeetingService {
             User user = meeting.getUser();
             if (user == null) {
                 String currentUserName = UserUtil.getCurrentUser();
-                User newuser = new User();
-                newuser.setUsername(currentUserName);
-                meeting.setUser(newuser);
+                User userNew = new User();
+                userNew.setUsername(currentUserName);
+                meeting.setUser(userNew);
             }
         } else {
             meeting = new Meeting();
@@ -117,7 +118,20 @@ public class MeetingServiceImpl implements MeetingService {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
+        // 查询所有的主会议
         List<Meeting> meetingList = meetingMapper.queryMeetingLikeMeeting(meeting);
+        // 查询所有的分会议
+        List<Meeting> subMeeting= meetingMapper.querySubMeeting();
+        for(Meeting m : meetingList){
+            List list = new ArrayList();
+            for(Meeting sub : subMeeting){
+                if( m.getId() == sub.getMainId()){
+                    list.add(sub);
+                }
+            }
+            m.setChildren(list);
+        }
+        System.out.println(meetingList);
         PageInfo<Meeting> pageInfo = new PageInfo(meetingList);
         return PageUtil.getPageResult(pageRequest, pageInfo);
 

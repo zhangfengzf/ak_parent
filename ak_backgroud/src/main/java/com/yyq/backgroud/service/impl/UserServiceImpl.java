@@ -99,7 +99,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(String name) {
-        User user = userMapper.getUserByName(name);
+        User user = getUserByName(name);
+        user.setUserScope(user.getUserScope().equals("内部用户")?"1":"2");
+        user.setUserType(user.getUserType().equals("长期用户")? "1":"2");
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String resetPassword = bCryptPasswordEncoder.encode(password);
         user.setPassword(resetPassword);
@@ -114,6 +116,8 @@ public class UserServiceImpl implements UserService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String currentUserName = UserUtil.getCurrentUser();
         User user = userMapper.getUserByName(currentUserName);
+        user.setUserScope(user.getUserScope().equals("内部用户")?"1":"2");
+        user.setUserType(user.getUserType().equals("长期用户")? "1":"2");
         // 1. 获取当前用户，存在在数据库中加密的密码
         String bCryptPassword = user.getPassword();
         if (!bCryptPasswordEncoder.matches(password, bCryptPassword)) {
@@ -129,9 +133,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void updateUserState(String name, String state) {
-        User user = userMapper.getUserByName(name);
-        user.setState(state);
-        userMapper.updateUser(user);
+        //User user = userMapper.getUserByName(name);
+        //user.setState(state);
+       // userMapper.updateUser(user);
+        userMapper.updateState(name,state);
         //  state :   1.启动     2.停用  ,且需要修改用户权限
         int roleId = "1".equals(state) ? 2 : 3;
         userMapper.updateRoleByUserName(name, roleId);

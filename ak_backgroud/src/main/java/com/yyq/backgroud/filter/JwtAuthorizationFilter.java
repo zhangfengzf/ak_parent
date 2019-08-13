@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
@@ -74,8 +75,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
           //  throw new TokenException("非法参数异常");
         }
         return null;
-
-
 
 
     }

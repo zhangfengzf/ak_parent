@@ -11,12 +11,13 @@ public interface MeetingMapper {
 
     Object updateMeeting(Meeting meeting);
 
-    Object deleteMeetingById(Integer id);
+    void deleteMeetingById(Integer id);
     Object queryMeetingByMeetingId(int id);
     List<Meeting> queryMeeting(@Param("username") String userName);
-    List<Meeting> queryMeetingLikeMeeting(Meeting meeting);
+    List<Meeting> queryMeetingLikeMeeting( Meeting meeting);
     List<Meeting> selectMeetingPage(@Param("username") String userName);
     List<Meeting> findAllMainMeetingByCurrUser(@Param("username")String name);
+    List<Meeting> querySubMeeting();
 
 
 }

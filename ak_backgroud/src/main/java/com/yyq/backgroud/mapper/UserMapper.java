@@ -15,6 +15,7 @@ public interface UserMapper {
     void insertUserAndRoleByName(String name);
     void updateRoleByUserName(String username,int roleId);
     List<User> findAllUserByPage(@Param("user") User user,@Param("startT") String startT ,@Param("endT") String endT);
+    void updateState(@Param("name") String name,@Param("state") String state);
 
 
 }

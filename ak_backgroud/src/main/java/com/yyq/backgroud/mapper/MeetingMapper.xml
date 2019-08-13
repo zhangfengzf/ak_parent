@@ -21,22 +21,75 @@
         <collection property="user" ofType="com.yyq.backgroud.bean.User">
             <result column="bid" property="id"/>
             <result column="username"  property="username"/>
-            <result column="real_name"  property="realName"/>
+            <result column="user_realname"  property="realName"/>
             <result column="bis_delete" property="isDelete"/>
         </collection>
     </resultMap>
+    <select id="queryMeetingLikeMeeting" resultMap="UserAndMeetingMap">
+        select
+        a.id as id,
+        case when a.meeting_type = '1' then '主会议'
+             when a.meeting_type = '2' then '独立会议'
+        else '分论坛' end as meeting_type,
+        a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
+        a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete, b.id as bid,
+        b.user_name as username, b.user_realname as user_realname, b.isdelete as bis_delete,
+        case when a.state =1 then '未开始'
+        when a.state = 2 then '已启动'
+        else '已结束' end as state
+        from       sys_meeting  a
+        left join  sys_user    b
+        on a.username = b.user_name
+        where  a.isdelete='0' and a.main_id = 0
+        <if test="meetingName != null &amp;&amp; meetingName.length()>0">
+            and a.meeting_name like concat('%',#{meetingName},'%')
+        </if>
+        <if test="address != null &amp;&amp; address.length()>0">
+            and a.address like concat('%',#{address},'%')
+        </if>
+
+        <if test="startTime != null &amp;&amp; startTime.length()>0 ">
+            and a.start_time <![CDATA[   >=  ]]>  #{startTime}
+        </if>
+        <if test="endTime != null &amp;&amp; endTime.length()>0 ">
+            and a.end_time <![CDATA[   <=  ]]>  #{endTime}
+        </if>
+        <if test="state != null &amp;&amp; state.length()>0 ">
+            and a.state = #{state}
+        </if>
+        <if test="user != null ">
+            <if test="user.realName != null &amp;&amp; user.realName.length()>0">
+                and b.user_realname = #{user.realName}
+            </if>
+        </if>
+        order by a.id
+    </select>
+
+    <select id="findAllMainMeetingByCurrUser" resultMap="UserAndMeetingMap">
+        select *  from  sys_meeting where  state = '1' and isdelete= '0' and main_id ='0'
+        <if test="username != null">
+            and username = #{username}
+        </if>
+    </select>
+
     <sql id="base_column">
         a.id as id,a.meeting_type,a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
         a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete,a.state, b.id as bid,
         b.user_name as username, b.user_realname as real_name, b.isdelete as bis_delete
     </sql>
+
     <select id="selectMeetingPage" resultMap="UserAndMeetingMap" >
         select
-        <include refid="base_column"/>
+        a.id as id,a.meeting_type,a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
+        a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete, b.id as bid,
+        b.user_name as username, b.user_realname as real_name, b.isdelete as bis_delete,
+        case when a.state =1 then '未开始'
+             when a.state = 2 then '已开始'
+             else '已结束' end as state
         from       sys_meeting  a
         left join  sys_user    b
         on a.username = b.user_name
-        where 1=1
+        where 1=1 and a.isdelete='0'
         <if test="username != null">
             and a.username = #{username}
         </if>
@@ -55,10 +108,9 @@
           #{meetingContext},
           #{startTime},
           #{endTime},
-          #{user.username}，
+          #{user.username},
           #{mainId})
     </insert>
-
     <update id="updateMeeting" parameterType="com.yyq.backgroud.bean.Meeting">
       update
           sys_meeting
@@ -82,15 +134,20 @@
 	    sys_meeting a
 	  left join  sys_user b
 	  on a.username = b.user_name
-      where a.id = #{id} and ais_delete = '0'
+      where a.id = #{id} and a.isdelete = '0'
     </select>
     <select id="queryMeeting" resultMap="UserAndMeetingMap">
         select
-           <include refid="base_column"/>
+        a.id as id,a.meeting_type,a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
+        a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete, b.id as bid,
+        b.user_name as username, b.user_realname as user_realname, b.isdelete as bis_delete,
+        case when a.state =1 then '未开始'
+        when a.state = 2 then '已开始'
+        else '已结束' end as state
         from       sys_meeting  a
-	    left join  sys_user    b
-	    on a.username = b.user_name
-	    where 1=1  and  ais_delete = '0'
+        left join  sys_user    b
+        on a.username = b.user_name
+        where 1=1
 	    <if test="username != null">
           and a.username = #{username}
         </if>
@@ -98,37 +155,20 @@
     <update id="deleteMeetingById">
         update sys_meeting set isdelete = '1'  where id = #{id}
     </update>
-    <select id="queryMeetingLikeMeeting" resultMap="UserAndMeetingMap">
-        select
-           <include refid="base_column"/>
-        from   sys_meeting a
-        left join sys_user b
+
+    <select id ="querySubMeeting" resultMap="UserAndMeetingMap">
+       select
+        a.id as id ,'分论坛' as  meeting_type,a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
+        a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete, b.id as bid,
+        b.user_name as username, b.user_realname as user_realname, b.isdelete as bis_delete,
+        a.main_id,
+        case when a.state =1 then '未开始'
+        when a.state = 2 then '已启动'
+        else '已结束' end as state
+        from       sys_meeting  a
+        left join  sys_user    b
         on a.username = b.user_name
-        where 1 = 1 and ais_delete = '0'
-        <if test="meetingName != null">
-            and a.meeting_name like concat('%',#{meetingName},'%')
-        </if>
-        <if test="startTime != null">
-            and a.start_time &gt;= #{startTime}
-        </if>
-        <if test="endTime != null">
-            and a.end_time &lt;= #{endTime}
-        </if>
-        <if test="state != null">
-            and a.state = #{state}
-        </if>
-        <if test="user != null">
-            <if test="user.username != null">
-                and a.username = #{user.username}
-            </if>
-        </if>
-        order by id
-    </select>
-    <select id="findAllMainMeetingByCurrUser" resultMap="UserAndMeetingMap">
-        select *  from  sys_meeting where  state = '1'
-        <if test="username != null">
-            and username = #{username}
-        </if>
+        where  a.isdelete='0' and a.main_id != 0
     </select>
 
 </mapper>

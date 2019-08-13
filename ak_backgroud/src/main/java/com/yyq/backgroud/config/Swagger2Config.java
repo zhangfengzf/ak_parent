@@ -33,9 +33,9 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("后台管理系统 RESTful API")
+                .title("后台管理系统")
                 .description("")
-                .termsOfServiceUrl("https://www.cnblogs.com/xiebq/")
+                .termsOfServiceUrl("")
                 .version("1.0")
                 .build();
     }

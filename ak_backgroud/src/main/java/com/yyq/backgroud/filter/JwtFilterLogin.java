@@ -65,7 +65,7 @@ public class JwtFilterLogin extends UsernamePasswordAuthenticationFilter {
     }
 
     /**
-     *
+     *  登录成功，生成token
      *
      */
     @Override
@@ -101,4 +101,5 @@ public class JwtFilterLogin extends UsernamePasswordAuthenticationFilter {
 
 
     }
+
 }

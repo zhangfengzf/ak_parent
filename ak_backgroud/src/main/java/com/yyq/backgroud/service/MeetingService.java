@@ -26,7 +26,7 @@ public interface MeetingService {
      * @param id
      * @return
      */
-    Object deleteMeeting(Integer id);
+    void deleteMeeting(Integer id);
 
     /**
      * 根据会议id查找 会议信息
@@ -40,7 +40,7 @@ public interface MeetingService {
      * @param
      * @return
      */
-    Object queryMeetingByUserName();
+    List<Meeting> queryMeetingByUserName();
 
     /**
      *
