@@ -31,7 +31,13 @@
         case when a.meeting_type = '1' then '主会议'
              when a.meeting_type = '2' then '独立会议'
         else '分论坛' end as meeting_type,
-        a.meeting_name,a.address, a.meeting_scale,a.meeting_bill,
+        a.meeting_name,a.address,
+        case when a.meeting_scale = 50 then '50人内'
+        when a.meeting_scale = 100 then '100人内'
+        when a.meeting_scale = 300 then '300人内'
+        when a.meeting_scale = 500 then '500人内'
+        else '500人以上' end as meeting_scale,
+        a.meeting_bill,
         a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete, b.id as bid,
         b.user_name as username, b.user_realname as user_realname, b.isdelete as bis_delete,
         case when a.state =1 then '未开始'
@@ -60,6 +66,9 @@
         <if test="user != null ">
             <if test="user.realName != null &amp;&amp; user.realName.length()>0">
                 and b.user_realname = #{user.realName}
+            </if>
+            <if test="user.username != null &amp;&amp; user.username.length()>0">
+                and b.user_name = #{user.username}
             </if>
         </if>
         order by a.id

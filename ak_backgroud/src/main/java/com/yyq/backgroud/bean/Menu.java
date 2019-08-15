@@ -17,6 +17,7 @@ public class Menu implements Serializable {
     private Integer id;
     private String name;                          // 菜单名
     private String url;                           // 路径
+    private String isLogin;                        // 是否需要登录
     @JsonIgnore
     private List<Role> roles ;                    // 角色
 

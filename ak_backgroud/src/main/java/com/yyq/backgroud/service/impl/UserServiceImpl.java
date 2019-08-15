@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseModel addUserMessage(User user) throws Exception {
 
-        // 1.判断用户是否已经存在
+        // 1.判断用户是否已经存在  用户名唯一
         User existUser = userMapper.getUserByName(user.getUsername());
         if (existUser != null) {
             if (user.getUsername().equals(existUser.getUsername())) {
@@ -65,7 +65,8 @@ public class UserServiceImpl implements UserService {
         userMapper.insertUser(user);
 
         // 5.添加信息到用户角色表中
-        userMapper.insertUserAndRoleByName(user.getUsername());
+        int roleId = "1".equals(user.getState()) ? 2 : 3;
+        userMapper.insertUserAndRoleByName(user.getUsername(),roleId);
 
         return new ResponseModel("", "", "成功添加用户！", true);
 

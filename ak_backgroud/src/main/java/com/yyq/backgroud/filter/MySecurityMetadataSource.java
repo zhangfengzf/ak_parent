@@ -22,10 +22,15 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-       String requestUrl = ((FilterInvocation)o).getRequestUrl();
+        List<String> allMenuIsNotLogin = menuService.findAllMenuIsNotLogin();
+
+        String requestUrl = ((FilterInvocation)o).getRequestUrl();
         List<Menu> list = menuService.findAllMenu();
         for(Menu menu :list){
             String url = menu.getUrl();
+            if(allMenuIsNotLogin.contains(url)){
+                return null;
+            }
             if(antPathMatcher.match(url,requestUrl) ){
                List<Role> roles = menu.getRoles();
                 int size = roles.size();
@@ -38,7 +43,6 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
             }
         }
         return null;
-        //return SecurityConfig.createList("ROLE_LOGIN");
     }
 
     @Override

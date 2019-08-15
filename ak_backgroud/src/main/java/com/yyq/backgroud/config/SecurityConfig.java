@@ -6,6 +6,7 @@ import com.yyq.backgroud.filter.MyAccessDecisionManager;
 import com.yyq.backgroud.filter.MySecurityMetadataSource;
 import com.yyq.backgroud.handler.CustomAccessDeniedHandler;
 import com.yyq.backgroud.handler.CustomAuthenticationEntryPoint;
+import com.yyq.backgroud.service.MenuService;
 import com.yyq.backgroud.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsUtils;
 
+import java.util.List;
+
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,31 +28,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private MyAccessDecisionManager accessDecisionManager;
-   @Autowired
+    @Autowired
     private MySecurityMetadataSource securityMetadataSource;
-   @Autowired
-   private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-   @Autowired
-   private CustomAccessDeniedHandler customAccessDeniedHandler;
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    @Autowired
+    private MenuService menuService;
+
+    public String[] getAllMenuIsNotLogin() {
+        List<String> allMenuIsNotLogin = menuService.findAllMenuIsNotLogin();
+
+        String[] array = new String[allMenuIsNotLogin.size()];
+        allMenuIsNotLogin.toArray(array);
+        return array;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-             http.cors().and().authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll()/*.antMatchers("/").permitAll()*/.anyRequest().authenticated()
-                    .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                        @Override
-                        public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                            object.setSecurityMetadataSource(securityMetadataSource);
-                            object.setAccessDecisionManager(accessDecisionManager);
-                            return  object;
-                        }
-                    })
-                     .and().
-                     addFilter(new JwtFilterLogin(authenticationManager()))
-                     .addFilter(new JwtAuthorizationFilter(authenticationManager()))
-                    .formLogin().loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/index").permitAll()
-                     .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler).and()
-                    .logout().permitAll().and().csrf().disable();
-            ;
+        String array[] = getAllMenuIsNotLogin();
+        http.cors().and().authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll().antMatchers(array).permitAll().anyRequest().authenticated()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setSecurityMetadataSource(securityMetadataSource);
+                        object.setAccessDecisionManager(accessDecisionManager);
+                        return object;
+                    }
+                })
+                .and().
+                addFilter(new JwtFilterLogin(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                .formLogin().loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/index").permitAll()
+                .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler).and()
+                .logout().permitAll().and().csrf().disable();
+        ;
     }
 
 

@@ -42,7 +42,10 @@ pagehelper:
 
 
 auto:
+  #自定义签名
+  signingKey: lanBridge
   resetpassword: 123456
+  # 文件存放地址
   path: D:\ak\
 
 

@@ -45,7 +45,7 @@
         </if>
     </sql>
     <insert id="insertUserAndRoleByName">
-        insert into sys_users_role(user_name) value (#{username})
+        insert into sys_users_role(user_name,role_id) value (#{name},#{roleid})
     </insert>
     <select id="getUserByName" resultMap="loadUserMap">
         select id,user_name,user_realname,password,department,telphone,

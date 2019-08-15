@@ -28,7 +28,6 @@
     </resultMap>
     <resultMap id="findAgendaMap" type="com.yyq.backgroud.bean.MeetingAgenda" extends="BaseResultMap">
         <collection property="speaker" resultMap="SpeakerMap">
-
         </collection>
 
     </resultMap>
@@ -37,10 +36,11 @@
         value(#{anchorName},#{anchorIntroduce},#{meetingId})
     </insert>
     <delete id="deleteAnchor" >
-        delete from anchor where id = #{id}
+        update anchor set is_delete = '1' where id = #{id}
     </delete>
     <select id="queryAnchors" resultMap="AnchorMap">
-       select id,anchor_name,anchor_introduce,meeting_id,is_delete  from anchor where meeting_id = #{meetingId}
+       select id,anchor_name,anchor_introduce,meeting_id
+       from anchor  where meeting_id = #{meetingId}  and  is_delete = '0'
     </select>
 
     <insert id="addSpeaker" >
@@ -48,12 +48,11 @@
         value(#{speakerName},#{speakerIntroduce},#{photo},#{title},#{agendaId})
     </insert>
 
-
-    <insert id="insertMeetingAgeda" useGeneratedKeys="true" keyProperty="id" parameterType="com.yyq.backgroud.bean.MeetingAgenda">
+    <insert id="insertMeetingAgenda" useGeneratedKeys="true" keyProperty="id" parameterType="com.yyq.backgroud.bean.MeetingAgenda">
         insert into meeting_agenda(agenda_type,start_time,end_time,meeting_id)
         value(#{type},#{startTime},#{endTime},#{meetingId})
     </insert>
-    <delete id="deleteMeetingAgeda">
+    <delete id="deleteMeetingAgenda">
       delete from meeting_agenda where id = #{id}
 
     </delete>

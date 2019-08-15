@@ -24,28 +24,33 @@ public class MeetingAgendaController {
     private MeetingAgendaService meetingAgendaService;
     @ApiOperation(value = "添加主持人")
     @PostMapping(value = "/addAnchor", consumes = MediaType.APPLICATION_JSON_VALUE )
-    public void addAnchor(@RequestBody Anchor anchor){
+    public ResponseEntity addAnchor(@RequestBody Anchor anchor){
         meetingAgendaService.addAnchor(anchor);
+        return ResponseEntity.ok(new ResponseModel("","","成功添加主持人！",true));
+
     }
     @ApiOperation(value = "删除主持人")
     @RequestMapping (value = "/deleteAnchor",method = RequestMethod.GET )
-    public void deleteAnchor(@ApiParam(name = "id",value = "主持人id",required = true)
+    public ResponseEntity deleteAnchor(@ApiParam(name = "id",value = "主持人id",required = true)
                                  @RequestParam Integer id){
         meetingAgendaService.deleteAnchor(id);
+        return ResponseEntity.ok(new ResponseModel("","","成功删除主持人！",true));
+
     }
+
     @ApiOperation(value = "查询主持人")
     @RequestMapping (value = "/queryAnchor",method = RequestMethod.GET )
     public ResponseEntity queryAnchor(@ApiParam(name = "id",value = "会议id",required = true)
                              @RequestParam Integer id){
-        meetingAgendaService.queryAnchors(id);
+
         return ResponseEntity.ok(new ResponseModel(meetingAgendaService.queryAnchors(id),"","",true));
     }
     @ApiOperation(value = "添加会议议程")
-    @RequestMapping(value = "/add",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/addAgenda",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addAgenda(@ApiParam(name = "meetingAgenda",value = "会议议程实体",required = true)
             @RequestBody MeetingAgenda meetingAgenda){
         try{
-            meetingAgendaService.addMeeingAgenda(meetingAgenda);
+            meetingAgendaService.addMeetingAgenda(meetingAgenda);
         }catch (Exception e){
             return ResponseEntity.ok(new ResponseModel("议程添加失败！","","",false));
         }
@@ -61,9 +66,10 @@ public class MeetingAgendaController {
 
     @ApiOperation(value = "删除会议议程")
     @RequestMapping(value = "/deleteAgenda",method = RequestMethod.GET)
-    public void deleteAgenda(@ApiParam(name = "id",value = "会议议程id",required = true)
+    public ResponseEntity deleteAgenda(@ApiParam(name = "id",value = "会议议程id",required = true)
                                  @RequestParam  Integer id){
-        meetingAgendaService.deleteMeetingAgeda(id);
+        meetingAgendaService.deleteMeetingAgenda(id);
+        return ResponseEntity.ok(new ResponseModel("","","删除议程成功！",true));
 
     }
 

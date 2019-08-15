@@ -12,7 +12,7 @@ public interface MeetingAgendaMapper {
     void deleteSpeaker(Integer id);
     List<Anchor> queryAnchors (Integer meetingId);
     void addSpeaker(Speaker speaker);
-    void insertMeetingAgeda(MeetingAgenda meetingAgenda);
+    void insertMeetingAgenda(MeetingAgenda meetingAgenda);
     List<MeetingAgenda> queryAllAgendaByMeetingId(Integer id);
-    void deleteMeetingAgeda(Integer id);
+    void deleteMeetingAgenda(Integer id);
 }

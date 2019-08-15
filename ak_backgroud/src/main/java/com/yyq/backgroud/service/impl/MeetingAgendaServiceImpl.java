@@ -33,13 +33,13 @@ public class MeetingAgendaServiceImpl  implements MeetingAgendaService {
 
     @Transactional
     @Override
-    public void addMeeingAgenda(MeetingAgenda meetingAgenda) throws Exception {
-        meetingAgendaMapper.insertMeetingAgeda(meetingAgenda);
+    public void addMeetingAgenda(MeetingAgenda meetingAgenda) throws Exception {
+        meetingAgendaMapper.insertMeetingAgenda(meetingAgenda);
         // 获取当前会议议程的id
-        int agendaIdid  = meetingAgenda.getId();
+        int agendaId  = meetingAgenda.getId();
         Speaker speaker = meetingAgenda.getSpeaker();
         if(speaker != null){
-            speaker.setAgendaId(agendaIdid);
+            speaker.setAgendaId(agendaId);
             meetingAgendaMapper.addSpeaker(speaker);
         }
 
@@ -51,8 +51,8 @@ public class MeetingAgendaServiceImpl  implements MeetingAgendaService {
     }
 
     @Override
-    public void deleteMeetingAgeda(Integer id) {
-        meetingAgendaMapper.deleteMeetingAgeda(id);
+    public void deleteMeetingAgenda(Integer id) {
+        meetingAgendaMapper.deleteMeetingAgenda(id);
         meetingAgendaMapper.deleteSpeaker(id);
     }
 }

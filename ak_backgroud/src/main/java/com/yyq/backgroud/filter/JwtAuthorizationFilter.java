@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+    // 自定义签名
+    private String signingKey ="lanBridge";
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -43,14 +45,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         try{
             String user = null;
             user = Jwts.parser()
-                    .setSigningKey("ddddd")
+                    .setSigningKey(signingKey)
                     .parseClaimsJws(token.replace("Bearer ", ""))
                     .getBody()
                     .getSubject();
-            //lihang--[role_user]
             if (user != null) {
                 String u = user.split("-")[0];
-
                 String[] split = user.split("-")[1].split(",");
                 ArrayList<GrantedAuthority> authorities = new ArrayList<>();
                 for (int i = 0; i < split.length; i++) {
@@ -63,16 +63,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             //throw new TokenException("Token已过期");
         } catch (UnsupportedJwtException e) {
             logger.error("Token格式错误: {} " + e);
-           // throw new TokenException("Token格式错误");
         } catch (MalformedJwtException e) {
             logger.error("Token没有被正确构造: {} " + e);
-           // throw new TokenException("Token没有被正确构造");
         } catch (SignatureException e) {
             logger.error("签名失败: {} " + e);
-           // throw new TokenException("签名失败");
         } catch (IllegalArgumentException e) {
             logger.error("非法参数异常: {} " + e);
-          //  throw new TokenException("非法参数异常");
+
         }
         return null;
 

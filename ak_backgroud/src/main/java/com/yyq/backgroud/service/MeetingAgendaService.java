@@ -28,7 +28,7 @@ public interface MeetingAgendaService {
      * 添加议程
      * @param meetingAgenda
      */
-    void addMeeingAgenda(MeetingAgenda meetingAgenda) throws Exception;
+    void addMeetingAgenda(MeetingAgenda meetingAgenda) throws Exception;
 
     /**
      *      根据会议id，查询当前会议id下的所有议程
@@ -39,5 +39,5 @@ public interface MeetingAgendaService {
      *  删除议程
      * @param id
      */
-    void deleteMeetingAgeda(Integer id);
+    void deleteMeetingAgenda(Integer id);
 }

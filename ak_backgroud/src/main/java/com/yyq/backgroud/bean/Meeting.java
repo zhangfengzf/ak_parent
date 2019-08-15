@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,14 +21,14 @@ public class Meeting implements Serializable {
     private String  meetingBill;                                    // 会议海报
     private String  meetingContext;                                 // 会议简介
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date startTime;                                         // 开始时间
+    private String startTime;                                         // 开始时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date endTime;                                           // 结束时间
+    private String endTime;                                           // 结束时间
     private String isDelete;                                        // 删除标记
     private String state;                                           // 会议状态
     private int  mainId;                                            // 主会议id
     private User user;                                              // 录入用户
     private List<MeetingAgenda> meetingAgenda;                      // 会议议程
     private List<Anchor> anchors;                                   // 主持人
-    private List<Meeting> children;                               // 分会议
+    private List<Meeting> children;                                 // 分会议
 }

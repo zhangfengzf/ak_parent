@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MenuMapper {
     List<Menu> findAllMenu();
+    List<Menu> findAllMenuIsNotLogin();
 }

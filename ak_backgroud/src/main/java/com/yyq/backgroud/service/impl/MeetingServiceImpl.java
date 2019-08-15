@@ -25,8 +25,7 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public Object addMeeting(Meeting meeting) throws Exception {
         User user = new User();
-        String userName = UserUtil.getCurrentUser();
-        user.setUsername(userName);
+        user.setUsername( UserUtil.getCurrentUser());
         meeting.setUser(user);
         meetingMapper.insertMeeting(meeting);
         return new ResponseModel(meeting.getId(), "", "成功添加会议！", true);
@@ -46,6 +45,7 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public  List<Meeting> queryMeetingByUserName() {
         List<Meeting> meetings = meetingMapper.queryMeeting(getCurrentUser());
+        
         return meetings;
     }
 
@@ -106,11 +106,13 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = requestModel.getMeeting();
         if (meeting != null) {
             User user = meeting.getUser();
-            if (user == null) {
+            if (user != null && user.getUsername()== null) {
                 String currentUserName = UserUtil.getCurrentUser();
-                User userNew = new User();
-                userNew.setUsername(currentUserName);
-                meeting.setUser(userNew);
+                if(!"admin".equals(currentUserName)){
+                    User userNew = new User();
+                    userNew.setUsername(currentUserName);
+                    meeting.setUser(userNew);
+                }
             }
         } else {
             meeting = new Meeting();

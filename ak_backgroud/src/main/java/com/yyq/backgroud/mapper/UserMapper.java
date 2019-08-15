@@ -12,7 +12,7 @@ public interface UserMapper {
     int updateUser(User user);
     int deleteUser(@Param("username") String userName);
     List<User> queryAllUser();
-    void insertUserAndRoleByName(String name);
+    void insertUserAndRoleByName(@Param("name") String name,@Param("roleid") int roleid);
     void updateRoleByUserName(String username,int roleId);
     List<User> findAllUserByPage(@Param("user") User user,@Param("startT") String startT ,@Param("endT") String endT);
     void updateState(@Param("name") String name,@Param("state") String state);
