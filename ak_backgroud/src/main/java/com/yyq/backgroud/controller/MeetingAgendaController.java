@@ -52,16 +52,16 @@ public class MeetingAgendaController {
         try{
             meetingAgendaService.addMeetingAgenda(meetingAgenda);
         }catch (Exception e){
-            return ResponseEntity.ok(new ResponseModel("议程添加失败！","","",false));
+            return ResponseEntity.ok(new ResponseModel("","","议程添加失败！",false));
         }
 
-        return ResponseEntity.ok(new ResponseModel("议程添加成功！","","",true));
+        return ResponseEntity.ok(new ResponseModel("","","议程添加成功!",true));
     }
     @ApiOperation(value = "查询会议议程")
     @RequestMapping(value = "/queryAgenda",method = RequestMethod.GET)
     public ResponseEntity queryAgenda(@ApiParam(name = "id",value = "会议id",required = true)
                                           @RequestParam  Integer id){
-        return ResponseEntity.ok(new ResponseModel(meetingAgendaService.queryMeetingAgenda(id),"","",true));
+        return ResponseEntity.ok(new ResponseModel(meetingAgendaService.queryMeetingAgenda(id),"","查询议程成功！",true));
     }
 
     @ApiOperation(value = "删除会议议程")

@@ -1,5 +1,6 @@
 package com.yyq.backgroud.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yyq.backgroud.bean.User;
@@ -9,6 +10,8 @@ import com.yyq.backgroud.model.PageResult;
 import com.yyq.backgroud.model.PageUtil;
 import com.yyq.backgroud.model.ResponseModel;
 import com.yyq.backgroud.service.UserService;
+import com.yyq.backgroud.utils.PasswordUtil;
+import com.yyq.backgroud.utils.SmsUtils;
 import com.yyq.backgroud.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,10 +58,20 @@ public class UserServiceImpl implements UserService {
         Date date = new Date();
         Timestamp timeStamp = new Timestamp(date.getTime());
         user.setCreateTime(timeStamp);
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        // 3. 此处设置固定密码，后续需要改成随机密码，并通知给用户
-        String password = encoder.encode("666666");
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String randomPassword = PasswordUtil.getRandomPassword();
+        System.out.println("随机生成密码------------------->>>>   "+ randomPassword);
+
+        /*    3. 调用短信接口，发送密码给用户 ,正式发布，解开注释即可！*/
+
+     /*   JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username",user.getUsername());
+        jsonObject.put("password",randomPassword);
+        SmsUtils.send(jsonObject.toJSONString(),user.getTelphone());*/
+
+
+        String password = encoder.encode(randomPassword);
         user.setPassword(password);
 
         // 4.添加用户到用户表中
@@ -66,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
         // 5.添加信息到用户角色表中
         int roleId = "1".equals(user.getState()) ? 2 : 3;
-        userMapper.insertUserAndRoleByName(user.getUsername(),roleId);
+        userMapper.insertUserAndRoleByName(user.getUsername(), roleId);
 
         return new ResponseModel("", "", "成功添加用户！", true);
 
@@ -101,8 +114,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(String name) {
         User user = getUserByName(name);
-        user.setUserScope(user.getUserScope().equals("内部用户")?"1":"2");
-        user.setUserType(user.getUserType().equals("长期用户")? "1":"2");
+        user.setUserScope(user.getUserScope().equals("内部用户") ? "1" : "2");
+        user.setUserType(user.getUserType().equals("长期用户") ? "1" : "2");
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String resetPassword = bCryptPasswordEncoder.encode(password);
         user.setPassword(resetPassword);
@@ -117,8 +130,8 @@ public class UserServiceImpl implements UserService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String currentUserName = UserUtil.getCurrentUser();
         User user = userMapper.getUserByName(currentUserName);
-        user.setUserScope(user.getUserScope().equals("内部用户")?"1":"2");
-        user.setUserType(user.getUserType().equals("长期用户")? "1":"2");
+        user.setUserScope(user.getUserScope().equals("内部用户") ? "1" : "2");
+        user.setUserType(user.getUserType().equals("长期用户") ? "1" : "2");
         // 1. 获取当前用户，存在在数据库中加密的密码
         String bCryptPassword = user.getPassword();
         if (!bCryptPasswordEncoder.matches(password, bCryptPassword)) {
@@ -136,8 +149,8 @@ public class UserServiceImpl implements UserService {
     public void updateUserState(String name, String state) {
         //User user = userMapper.getUserByName(name);
         //user.setState(state);
-       // userMapper.updateUser(user);
-        userMapper.updateState(name,state);
+        // userMapper.updateUser(user);
+        userMapper.updateState(name, state);
         //  state :   1.启动     2.停用  ,且需要修改用户权限
         int roleId = "1".equals(state) ? 2 : 3;
         userMapper.updateRoleByUserName(name, roleId);

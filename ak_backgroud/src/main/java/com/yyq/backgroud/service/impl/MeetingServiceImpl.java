@@ -32,8 +32,8 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public Object updateMeeting(Meeting meeting) {
-        return meetingMapper.updateMeeting(meeting);
+    public void updateMeeting(Meeting meeting) {
+         meetingMapper.updateMeeting(meeting);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     }
 
-    @Override
+ /*   @Override
     public void openMeeting(Integer id) {
 
         Meeting meeting = (Meeting) meetingMapper.queryMeetingByMeetingId(id);
@@ -153,11 +153,16 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = (Meeting) meetingMapper.queryMeetingByMeetingId(id);
         meeting.setState("3");
         meetingMapper.updateMeeting(meeting);
-    }
+    }*/
 
     @Override
     public List<Meeting> queryMainMeetingByUser() {
 
         return meetingMapper.findAllMainMeetingByCurrUser(getCurrentUser());
+    }
+
+    @Override
+    public void UpdateMeetingState(Integer id, String state) {
+        meetingMapper.updateMeetingState(id,state);
     }
 }

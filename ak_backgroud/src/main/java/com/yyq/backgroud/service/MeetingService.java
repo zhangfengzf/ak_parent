@@ -19,7 +19,7 @@ public interface MeetingService {
      * @return
      */
 
-    Object updateMeeting(Meeting meeting);
+    void updateMeeting(Meeting meeting);
 
     /**
      * 删除会议
@@ -62,16 +62,25 @@ public interface MeetingService {
     PageResult fuzzyQueryMeetingByPage(RequestModel requestModel);
 
     /**
+     *  修改会议状态
+     * @param id
+     * @param state
+     */
+    void UpdateMeetingState(Integer id,String state);
+
+   /* *//**
      *  开启会议
      * @param id
-     */
+     *//*
     void openMeeting(Integer id);
 
-    /**
+    *//**
      * 关闭会议
      * @param id
-     */
+     *//*
     void closeMeeting(Integer id);
+*/
+
 
     /**
      *

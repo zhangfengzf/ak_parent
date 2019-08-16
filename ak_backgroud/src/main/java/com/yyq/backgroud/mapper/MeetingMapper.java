@@ -9,7 +9,7 @@ public interface MeetingMapper {
 
     Integer insertMeeting(Meeting meeting);
 
-    Object updateMeeting(Meeting meeting);
+    void updateMeeting(Meeting meeting);
 
     void deleteMeetingById(Integer id);
     Object queryMeetingByMeetingId(int id);
@@ -18,6 +18,7 @@ public interface MeetingMapper {
     List<Meeting> selectMeetingPage(@Param("username") String userName);
     List<Meeting> findAllMainMeetingByCurrUser(@Param("username")String name);
     List<Meeting> querySubMeeting();
+    void updateMeetingState(@Param("id") Integer id,@Param("state") String state);
 
 
 }

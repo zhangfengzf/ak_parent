@@ -40,8 +40,8 @@
         a.meeting_bill,
         a.meeting_context, a.start_time,a.end_time,a.isdelete as ais_delete, b.id as bid,
         b.user_name as username, b.user_realname as user_realname, b.isdelete as bis_delete,
-        case when a.state =1 then '未开始'
-        when a.state = 2 then '已启动'
+        case when a.state = '1' then '未开始'
+        when a.state = '2' then '已启动'
         else '已结束' end as state
         from       sys_meeting  a
         left join  sys_user    b
@@ -179,5 +179,7 @@
         on a.username = b.user_name
         where  a.isdelete='0' and a.main_id != 0
     </select>
-
+    <update id="updateMeetingState">
+        update sys_meeting set state = #{state} where id =#{id}
+    </update>
 </mapper>

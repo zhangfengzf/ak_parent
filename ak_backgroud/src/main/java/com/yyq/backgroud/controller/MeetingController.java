@@ -47,10 +47,11 @@ public class MeetingController {
     }
 
     @ApiOperation(value = "编辑会议", notes = "修改会议信息")
-    @RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/updateMeeting", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateMeeting(@ApiParam(name = "meeting", value = "会议信息对象", required = true)
                                         @RequestBody Meeting meeting) {
-        return ResponseEntity.ok(meetingService.updateMeeting(meeting));
+        meetingService.updateMeeting(meeting);
+        return ResponseEntity.ok(new ResponseModel("","","修改成功！",true));
     }
 
     @ApiOperation(value = "删除会议", notes = "删除会议信息")
@@ -75,21 +76,25 @@ public class MeetingController {
         return ResponseEntity.ok(new ResponseModel(pageResult, "", "", true));
     }
 
+    @ApiOperation(value = "修改会议状态", notes = "开启会议，修改会议状态")
+    @GetMapping("/updateMeetingState")
+    public ResponseEntity openMeeting(@ApiParam(name = "id", value = "会议id", required = true) @RequestParam("id") Integer id,
+            @ApiParam(name = "state",value = "会议状态",required = true) @RequestParam("state") String state) {
+        try{
+            meetingService.UpdateMeetingState(id,state);
+        }catch (Exception e){
+            return ResponseEntity.ok(new ResponseModel("", "", "操作失败！！！", true));
+        }
+        return ResponseEntity.ok(new ResponseModel("", "", "操作成功！", true));
 
-
-    @ApiOperation(value = "开启会议", notes = "开启会议，修改会议状态")
-    @GetMapping("/openMeeting")
-    public void openMeeting(@ApiParam(name = "id", value = "会议id", required = true) @RequestParam("id") Integer id) {
-
-        meetingService.openMeeting(id);
     }
 
-    @ApiOperation(value = "停止会议", notes = "开启会议，修改会议状态")
+  /*  @ApiOperation(value = "停止会议", notes = "开启会议，修改会议状态")
     @GetMapping("/closeMeeting")
     public void closeMeeting(@ApiParam(name = "id", value = "会议id", required = true) @RequestParam("id") Integer id) {
 
         meetingService.closeMeeting(id);
-    }
+    }*/
 
     @ApiOperation(value = "查询添加人", notes = "根据当前用户查询所有添加人")
     @PostMapping("/queryMeetingUserByCurrentUser")
